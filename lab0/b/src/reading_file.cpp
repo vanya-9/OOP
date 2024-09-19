@@ -2,7 +2,7 @@
 
 void reading_file::set_file_name() {
   std::cout << "What is file name?\n";
-  getline(std::cin, file_name);  // так можно вводить строку с пробелом!
+  getline(std::cin, file_name);
 }
 
 std::string reading_file::get_file_name() { return file_name; }
@@ -23,7 +23,6 @@ std::map<std::string, unsigned>::iterator reading_file::get_words_begin() {
   return words.begin();
 }
 
-// Возвращаем итератор на конец
 std::map<std::string, unsigned>::iterator reading_file::get_words_end() {
   return words.end();
 }
@@ -32,9 +31,8 @@ double reading_file::get_number_words() { return number_words; }
 
 void reading_file::adding_map(reading_file &map_words) {
   if (!check_empty_new_word()) {
-    map_words.plus_word();  // Увеличиваем количество слов
-    map_words.improve_number_map(
-        get_new_word());  // Обновляем частотную карту слов
+    map_words.plus_word();
+    map_words.improve_number_map(get_new_word());
     new_word_drop();
   }
 }

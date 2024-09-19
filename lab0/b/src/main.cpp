@@ -1,19 +1,14 @@
-#include <algorithm>  // для std::sort
-#include <map>        // для map
+#include <algorithm>
+#include <map>
 #include <vector>
 
-#include "cctype"  // Для std::isalpha и std::isdigit
+#include "cctype"
 #include "fstream"
 #include "iostream"
-#include "string"
-
-
 #include "reading_file.h"
 #include "sorted_data.h"
+#include "string"
 #include "writing_csv.h"
-
-
-
 
 bool is_delimiter(char symbol) {
   return !std::isalpha(symbol) && !std::isdigit(symbol);
@@ -39,7 +34,6 @@ int main() {
   reading_file map_words;
   myfile.set_file_name();
   create_map(myfile, map_words);
-  //  Сортируем вектор по значению (второй элемент)
   sorted_data vector_map;
   vector_map.copy_from_map(map_words.get_words_begin(),
                            (map_words.get_words_end()));

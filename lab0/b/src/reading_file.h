@@ -5,11 +5,11 @@
 #include "map"
 #include "string"
 class reading_file {
-  std::string new_word = "";  // суда буду лепить слова
+  std::string new_word = "";
   std::string file_name;
   std::map<std::string, unsigned> words;
-  double number_words = 0.0;  // k количество слов в файле
-  std::string read;  // в эту переменную буду считывать строки из файла
+  double number_words = 0.0;
+  std::string read;
 
  public:
   void set_file_name();

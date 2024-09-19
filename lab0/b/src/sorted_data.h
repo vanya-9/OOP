@@ -1,9 +1,9 @@
 #ifndef SORTED_DATA_H
 #define SORTED_DATA_H
+#include "algorithm"
 #include "map"
 #include "string"
 #include "vector"
-#include "algorithm"
 class sorted_data {
   std::vector<std::pair<std::string, unsigned>> vector;
 
@@ -16,7 +16,6 @@ class sorted_data {
 
   std::vector<std::pair<std::string, unsigned>>::iterator get_vector_begin();
 
-  // Возвращаем итератор на конец
   std::vector<std::pair<std::string, unsigned>>::iterator get_vector_end();
 
   void vector_sort(
