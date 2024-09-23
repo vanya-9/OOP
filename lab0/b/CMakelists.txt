@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
 project(lab0)
 
-add_executable(${PROJECT_NAME} src/main.cpp src/reading_file.cpp src/sorted_data.cpp src/writing_csv.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/reading_file.cpp src/data_processing.cpp src/writing_csv.cpp)
 
