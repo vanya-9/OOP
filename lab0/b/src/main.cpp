@@ -39,7 +39,7 @@ void CreateMap(ReadingFile& input_file, data_processing& map) {
 
 int main(int argc, char* argv[]) {
   if (argc < 3) {
-    std::cerr << "Mistake" << std::endl;
+    std::cerr << "Error: Not enough arguments" << std::endl;
     return 1;
   }
   ReadingFile input_file;
