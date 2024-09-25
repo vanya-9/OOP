@@ -1,13 +1,21 @@
 
 #include "data_processing.h"
 
-void data_processing::plus_word() { number_words++; }
-void data_processing::increse_word_count(std::string word) { words[word]++; }
-std::map<std::string, unsigned>::iterator data_processing::get_words_begin() {
-  return words.begin();
+void data_processing::IncreseWordCount(std::string word) {
+  words[word]++;
+  number_words_++;
 }
 
-std::map<std::string, unsigned>::iterator data_processing::get_words_end() {
-  return words.end();
+double data_processing::GetNumberWords() {
+  return number_words_;
 }
-double data_processing::get_number_words() { return number_words; }
+
+void data_processing::SortData(
+    std::vector<std::pair<std::string, unsigned>>& vector_map) {
+  vector_map.assign(words.begin(), words.end());
+  std::sort(vector_map.begin(), vector_map.end(),
+            [](const std::pair<std::string, unsigned>& element_one,
+               const std::pair<std::string, unsigned>& element_two) {
+              return element_one.second > element_two.second;
+            });
+}

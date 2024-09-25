@@ -1,24 +1,11 @@
-#ifndef READING_FILE_H
-#define READING_FILE_H
-#include <string>
+#pragma once
 #include <fstream>
-class reading_file {
-  std::string file_name;
-  std::string reading_str; 
-  std::string new_word = "";  
+#include <string>
+class ReadingFile {
+  std::string file_name_;
+
  public:
-  void set_file_name(const std::string& name);
+  void SetFileName(const std::string& name);
 
-  std::string get_file_name();
-
-  bool read_line(std::ifstream& file);
-
-  std::string get_read();
-
-  void add_to_new_word(char c);
-  bool check_empty_new_word();
-  std::string get_new_word();
-  void new_word_drop();
+  std::string GetFileName();
 };
-
-#endif

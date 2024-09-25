@@ -1,15 +1,15 @@
-#ifndef WRITING_CSV_H
-#define WRITING_CSV_H
+#pragma once
 #include "fstream"
 #include "vector"
-#define percent 100
+const int kPercent = 100;
 
-class writing_csv {
-  std::string file_writing_name;
+class WriteCsv {
+  std::string file_writing_name_;
 
  public:
-  void set_file_name(const std::string& name);
-  void writing(std::vector<std::pair<std::string, unsigned>> vector_map,
-               double number_words, const char* output_file_name);
+  void SetFileName(const std::string& name);
+
+  void Write(std::vector<std::pair<std::string, unsigned>> vector_map,
+             double number_words,
+             std::string output_file_name);
 };
-#endif

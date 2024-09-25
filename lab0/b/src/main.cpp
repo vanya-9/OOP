@@ -10,34 +10,30 @@
 #include "string"
 #include "writing_csv.h"
 
-bool is_delimiter(char symbol) {
+bool IsDelimiter(char symbol) {
   return !std::isalpha(symbol) && !std::isdigit(symbol);
 }
 
-void adding_map(reading_file& myfile, data_processing& map) {
-  if (!myfile.check_empty_new_word()) {
-    map.plus_word();
-    map.increse_word_count(myfile.get_new_word());
-    myfile.new_word_drop();
+void AddToMap(std::string& new_word, data_processing& map) {
+  if (!new_word.empty()) {
+    map.IncreseWordCount(new_word);
+    new_word.clear();
   }
 }
 
-bool compare(std::pair<std::string, unsigned>& element_one,
-             std::pair<std::string, unsigned>& element_two) {
-  return element_one.second > element_two.second;
-}
-
-void create_map(reading_file& myfile, data_processing& map) {
-  std::ifstream shows_file(myfile.get_file_name());
-  while (myfile.read_line(shows_file)) {
-    for (char c : myfile.get_read()) {
-      if (!is_delimiter(c)) {
-        myfile.add_to_new_word(c);
+void CreateMap(ReadingFile& input_file, data_processing& map) {
+  std::ifstream shows_file(input_file.GetFileName());
+  std::string reading_str;
+  std::string new_word = "";
+  while (getline(shows_file, reading_str)) {
+    for (char c : reading_str) {
+      if (!IsDelimiter(c)) {
+        new_word += c;
       } else {
-        adding_map(myfile, map);
+        AddToMap(new_word, map);
       }
     }
-    adding_map(myfile, map);
+    AddToMap(new_word, map);
   }
 }
 
@@ -46,15 +42,14 @@ int main(int argc, char* argv[]) {
     std::cerr << "Mistake" << std::endl;
     return 1;
   }
-  reading_file myfile;
-  myfile.set_file_name(argv[1]);
+  ReadingFile input_file;
+  input_file.SetFileName(argv[1]);
   data_processing map;
-  create_map(myfile, map);
-
-  std::vector<std::pair<std::string, unsigned>> vector_map(
-      map.get_words_begin(), map.get_words_end());
-  std::sort(vector_map.begin(), vector_map.end(), compare);
-  writing_csv writing_file;
-  writing_file.writing(vector_map, map.get_number_words(), argv[2]);
+  CreateMap(input_file, map);
+  std::vector<std::pair<std::string, unsigned>> vector_map;
+  map.SortData(vector_map);
+  WriteCsv writing_file;
+  std::string output_file = argv[2];
+  writing_file.Write(vector_map, map.GetNumberWords(), output_file);
   return 0;
 }
