@@ -3,7 +3,7 @@
 #include "vector"
 const int kPercent = 100;
 
-class WriteCsv {
+class writer {
   std::string file_writing_name_;
 
  public:

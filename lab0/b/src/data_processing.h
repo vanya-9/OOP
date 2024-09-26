@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
-class data_processing {
+class dataProcessing {
   std::map<std::string, unsigned> words;
   double number_words_ = 0.0;
 
