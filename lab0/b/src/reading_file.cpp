@@ -1,9 +1,9 @@
 #include "reading_file.h"
 
-void ReadingFile::SetFileName(const std::string& name) {
+void readingFile::SetFileName(const std::string& name) {
   file_name_ = name;
 }
 
-std::string ReadingFile::GetFileName() {
+std::string readingFile::GetFileName() {
   return file_name_;
 }

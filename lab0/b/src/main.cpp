@@ -20,11 +20,11 @@ void AddToMap(std::string& new_word, dataProcessing& map) {
   }
 }
 
-void CreateMap(ReadingFile& input_file, dataProcessing& map) {
+void CreateMap(readingFile& input_file, dataProcessing& map) {
   std::ifstream shows_file(input_file.GetFileName());
   std::string reading_str;
   std::string new_word = "";
-  
+
   while (getline(shows_file, reading_str)) {
     for (char c : reading_str) {
       if (!IsDelimiter(c)) {
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  ReadingFile input_file;
+  readingFile input_file;
   input_file.SetFileName(argv[1]);
 
   dataProcessing map;

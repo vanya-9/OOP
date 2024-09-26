@@ -1,7 +1,7 @@
 #pragma once
 #include <fstream>
 #include <string>
-class ReadingFile {
+class readingFile {
   std::string file_name_;
 
  public:
