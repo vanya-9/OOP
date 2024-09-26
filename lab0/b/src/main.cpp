@@ -22,11 +22,11 @@ void AddToMap(std::string& new_word, dataProcessing& map) {
 
 void CreateMap(readingFile& input_file, dataProcessing& map) {
   std::ifstream shows_file(input_file.GetFileName());
-  std::string reading_str;
+  std::string read_str;
   std::string new_word = "";
 
-  while (getline(shows_file, reading_str)) {
-    for (char c : reading_str) {
+  while (getline(shows_file, read_str)) {
+    for (char c : read_str) {
       if (!IsDelimiter(c)) {
         new_word += c;
       } else {
