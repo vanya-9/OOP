@@ -1,40 +1,34 @@
 #include <algorithm>
 #include <map>
 #include <vector>
+#include <list>
 
 #include "cctype"
-#include "data_processing.h"
+#include "data_process.h"
 #include "fstream"
 #include "iostream"
-#include "reading_file.h"
+#include "reader.h"
 #include "string"
 #include "writer.h"
 
-bool IsDelimiter(char symbol) {
+bool CountFrequency(char symbol) {
   return !std::isalpha(symbol) && !std::isdigit(symbol);
 }
 
-void AddToMap(std::string& new_word, dataProcessing& map) {
-  if (!new_word.empty()) {
-    map.IncreseWordCount(new_word);
-  }
-}
-
-void CreateMap(readingFile& input_file, dataProcessing& map) {
-  std::ifstream shows_file(input_file.GetFileName());
+void CreateMap(Reader& input_file, DataProcess& map) {
   std::string read_str;
   std::string new_word = "";
 
-  while (getline(shows_file, read_str)) {
-    for (char c : read_str) {
-      if (!IsDelimiter(c)) {
-        new_word += c;
+  while (input_file.ReadLine(read_str)) {
+    for (char symbol : read_str) {
+      if (!CountFrequency(symbol)) {
+        new_word += symbol;
       } else {
-        AddToMap(new_word, map);
+        map.AddToMap(new_word);
         new_word.clear();
       }
     }
-    AddToMap(new_word, map);
+    map.AddToMap(new_word);
     new_word.clear();
   }
 }
@@ -45,17 +39,17 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  readingFile input_file;
-  input_file.SetFileName(argv[1]);
 
-  dataProcessing map;
+  Reader input_file(argv[1]);
+
+  DataProcess map;
   CreateMap(input_file, map);
-  std::vector<std::pair<std::string, unsigned>> vector_map;
-  map.SortData(vector_map);
+  std::list<std::pair<std::string, unsigned>> list_map;
+  map.SortData(list_map);
 
-  writer writing_file;
   std::string output_file = argv[2];
-  writing_file.Write(vector_map, map.GetNumberWords(), output_file);
+  Writer writing_file(output_file);
+  writing_file.Write(list_map, map.GetNumberWords(), output_file);
 
   return 0;
 }
