@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <map>
 #include <string>
-#include <vector> //
 #include <list>
 class DataProcess {
   std::map<std::string, unsigned> words_;

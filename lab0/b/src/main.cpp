@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <map>
-#include <vector>
 #include <list>
 
 #include "cctype"
@@ -11,7 +10,7 @@
 #include "string"
 #include "writer.h"
 
-bool CountFrequency(char symbol) {
+bool IsDelimer(char symbol) {
   return !std::isalpha(symbol) && !std::isdigit(symbol);
 }
 
@@ -21,7 +20,7 @@ void CreateMap(Reader& input_file, DataProcess& map) {
 
   while (input_file.ReadLine(read_str)) {
     for (char symbol : read_str) {
-      if (!CountFrequency(symbol)) {
+      if (!IsDelimer(symbol)) {
         new_word += symbol;
       } else {
         map.AddToMap(new_word);
@@ -38,7 +37,6 @@ int main(int argc, char* argv[]) {
     std::cerr << "Error: Not enough arguments" << std::endl;
     return 1;
   }
-
 
   Reader input_file(argv[1]);
 

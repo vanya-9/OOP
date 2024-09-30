@@ -13,7 +13,7 @@ double DataProcess::GetNumberWords() {
 void DataProcess::SortData(
     std::list<std::pair<std::string, unsigned>>& list_map) {
 
-   list_map.assign(words_.begin(), words_.end());
+  list_map.assign(words_.cbegin(), words_.cend());
   list_map.sort(
             [](const std::pair<std::string, unsigned>& element_one,
                const std::pair<std::string, unsigned>& element_two) {

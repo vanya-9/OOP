@@ -9,7 +9,7 @@ class Writer {
   std::ofstream output_file_;
 
  public:
-  Writer(std::string file_writing_name_) : file_writing_name_(file_writing_name_) {
+  Writer(std::string file_writing_name) : file_writing_name_(file_writing_name) {
     output_file_.open(file_writing_name_);
   }
 
