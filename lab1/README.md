@@ -13,4 +13,4 @@ g++ -std=c++17 CircularBuffer_tets.cpp CircularBuffer.cpp googletest/build/lib/l
 g++ -std=c++17 CircularBuffer_tets.cpp CircularBuffer.cpp googletest/build/lib/libgtest.a googletest/build/lib/libgtest_main.a --coverage -lpthread -I googletest/googletest/include && ./a.out -lgtest
 lcov -t "gcd" -o gcd.info -c -d . --ignore-errors inconsistent
 genhtml -o report gcd.info --ignore-errors inconsistent
-Go to report and open index.html , we go into the project and see the covera
+report/index.html
