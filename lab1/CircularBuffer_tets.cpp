@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
-#include "CircularBuffer.h"  
+#include "CircularBuffer.h"
 
 TEST(CircularBufferTest, DefaultConstructor) {
   CircularBuffer buffer;
@@ -51,7 +51,7 @@ TEST(CircularBufferTest, CopyConstructor) {
   ASSERT_EQ(buffer_two.back(), 'z');
 }
 
-TEST(CircularBufferTest, OperatorMas) {
+TEST(CircularBufferTest, OperatorGetByIndex) {
   CircularBuffer buffer(5, 'a');
   buffer.push_back('x');
   buffer.push_back('y');
@@ -394,7 +394,7 @@ TEST(CircularBufferSwapTest, SwapEmptyBuffers) {
   CircularBuffer cb1(5);
   CircularBuffer cb2(5);
 
-  cb1.swap(cb2);  // Обмен пустыми буферами
+  cb1.swap(cb2); 
 
   EXPECT_TRUE(cb1.empty());
   EXPECT_TRUE(cb2.empty());
@@ -597,41 +597,76 @@ TEST(CircularBufferTest, InsertInFullBuffer) {
   ASSERT_EQ(cb.size(), 2);
 }
 
-TEST(CircularBufferTest, EraseValidRange) {
-  CircularBuffer buffer(5);
-  buffer.push_back('A');
-  buffer.push_back('B');
-  buffer.push_back('C');
-  buffer.push_back('D');
-  buffer.push_back('E');
+#include <gtest/gtest.h>
+#include "CircularBuffer.h"
+
+TEST(EraseTest, EraseMiddleElements) {
+  CircularBuffer buffer;
+  buffer.push_back('a');
+  buffer.push_back('b');
+  buffer.push_back('c');
+  buffer.push_back('d');
+
   buffer.erase(1, 3);
-  EXPECT_EQ(buffer[0], 'D');
-  EXPECT_EQ(buffer[1], 'E');
-  EXPECT_EQ(buffer[2], 'A');
+  EXPECT_EQ(buffer.size(), 2);
+  EXPECT_EQ(buffer.front(), 'a');
+  EXPECT_EQ(buffer.back(), 'd');
 }
 
-TEST(CircularBufferTest, EraseFullRange) {
-  CircularBuffer buffer(5);
-  buffer.push_back('A');
-  buffer.push_back('B');
-  buffer.push_back('C');
-  buffer.push_back('D');
-  buffer.push_back('E');
-  buffer.erase(0, 5);
-  for (int i = 0; i < buffer.capacity(); ++i) {
-    EXPECT_EQ(buffer[i], '\0');
-  }
-  EXPECT_TRUE(buffer.empty());
+TEST(EraseTest, EraseAllElements) {
+  CircularBuffer buffer;
+  buffer.push_back('a');
+  buffer.push_back('b');
+  buffer.push_back('c');
+  buffer.push_back('d');
+
+  buffer.erase(0, 4);
+  EXPECT_EQ(buffer.size(), 0);
 }
 
-TEST(CircularBufferTest, EraseWithInvalidIndices) {
-  CircularBuffer cb(5);
-  cb.push_back('A');
-  cb.push_back('B');
-  cb.push_back('C');
-  ASSERT_THROW(cb.erase(3, 6), std::invalid_argument);
-  ASSERT_THROW(cb.erase(-1, 2), std::invalid_argument);
-  ASSERT_THROW(cb.erase(2, 1), std::invalid_argument);
+TEST(EraseTest, EraseInvalidRange) {
+  CircularBuffer buffer;
+  buffer.push_back('a');
+  buffer.push_back('b');
+  buffer.push_back('c');
+  buffer.push_back('d');
+
+  EXPECT_THROW(buffer.erase(2, 1), std::invalid_argument);
+  EXPECT_THROW(buffer.erase(-1, 2), std::invalid_argument);
+  EXPECT_THROW(buffer.erase(0, 5), std::invalid_argument);
+}
+
+TEST(EraseTest, EraseAllFromMiddleWhenHeadNotZero) {
+  CircularBuffer buffer(4);
+  buffer.push_back('a');
+  buffer.push_back('b');
+  buffer.push_back('c');
+  buffer.push_back('d');
+
+  buffer.pop_front();
+  buffer.pop_front();
+  buffer.erase(0, 2);
+  EXPECT_EQ(buffer.size(), 0);
+}
+
+TEST(EraseTest, EraseMiddleElementsWithHeadNotZero) {
+  CircularBuffer buffer(7);
+  buffer.push_back('a');
+  buffer.push_back('b');
+  buffer.push_back('c');
+  buffer.push_back('d');
+  buffer.push_back('e');
+  buffer.push_back('f');
+  buffer.push_back('g');
+
+  buffer.pop_front();
+  buffer.pop_front();
+
+  buffer.erase(0, 3);
+
+  EXPECT_EQ(buffer.size(), 2);
+  EXPECT_EQ(buffer.front(), 'f');
+  EXPECT_EQ(buffer.back(), 'g');
 }
 
 TEST(CircularBufferTest, ClearNonEmptyBuffer) {

@@ -1,15 +1,18 @@
 /**
  * @file CircularBuffer.h
  * @brief Defines the CircularBuffer class for managing a circular buffer.
- * 
+ *
  * This file contains the definition of the CircularBuffer class, which provides
  * methods to interact with a circular buffer.
- * It supports insertion, deletion, resizing, and other buffer management operations.
+ * It supports insertion, deletion, resizing, and other buffer management
+ * operations.
  */
 
+#pragma once
 #include <errno.h>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 /** @brief Default size for the circular buffer. */
 const size_t default_size = 4;
@@ -24,10 +27,10 @@ typedef char value_type;
  * insertion and deletion of elements in a circular manner.
  */
 class CircularBuffer {
-  value_type* buffer_; /**< Pointer to the buffer array */
-  int capacity_;       /**< Capacity of the buffer */
-  int head_;           /**< Index of the head element */
-  int tail_;           /**< Index of the tail element */
+  std::vector<value_type> buffer_; /**< Pointer to the buffer array */
+  int capacity_;                   /**< Capacity of the buffer */
+  int head_;                       /**< Index of the head element */
+  int tail_;                       /**< Index of the tail element */
 
  public:
   /**
@@ -58,6 +61,10 @@ class CircularBuffer {
    * @brief Destructor, deallocates the buffer.
    */
   ~CircularBuffer();
+
+  const int increment() const;
+
+  const int decrement() const;
 
   /**
    * @brief Correct index access depending on the header.
@@ -94,13 +101,13 @@ class CircularBuffer {
    * @brief Get reference to the front element (const version).
    * @return Const reference to the front element.
    */
-  value_type& front() const;
+  const value_type& front() const;
 
   /**
    * @brief Get reference to the back element (const version).
    * @return Const reference to the back element.
    */
-  value_type& back() const;
+  const value_type& back() const;
 
   /**
    * @brief Get the number of elements in the buffer.
