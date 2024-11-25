@@ -1,0 +1,34 @@
+{
+	"BUILD_DIR" : "/home/admin1/Desktop/untitled/build/Desktop-Debug/untitled_autogen",
+	"CMAKE_BINARY_DIR" : "/home/admin1/Desktop/untitled/build/Desktop-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/admin1/Desktop/untitled/build/Desktop-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/admin1/Desktop/untitled",
+	"CMAKE_SOURCE_DIR" : "/home/admin1/Desktop/untitled",
+	"GENERATOR" : "Unix Makefiles",
+	"INCLUDE_DIR" : "/home/admin1/Desktop/untitled/build/Desktop-Debug/untitled_autogen/include",
+	"INPUTS" : 
+	[
+		"/home/admin1/Desktop/untitled/Image/w_bishop.svg",
+		"/home/admin1/Desktop/untitled/Image/w_rook.svg",
+		"/home/admin1/Desktop/untitled/Image/w_knight.svg",
+		"/home/admin1/Desktop/untitled/Image/b_rook.svg",
+		"/home/admin1/Desktop/untitled/Image/b_king.svg",
+		"/home/admin1/Desktop/untitled/Image/w_king.svg",
+		"/home/admin1/Desktop/untitled/Image/w_queen.svg",
+		"/home/admin1/Desktop/untitled/Image/b_bishop.svg",
+		"/home/admin1/Desktop/untitled/Image/b_queen.svg",
+		"/home/admin1/Desktop/untitled/Image/w_pawn.svg",
+		"/home/admin1/Desktop/untitled/Image/b_knight.svg",
+		"/home/admin1/Desktop/untitled/Image/b_pawn.svg"
+	],
+	"LOCK_FILE" : "/home/admin1/Desktop/untitled/build/Desktop-Debug/CMakeFiles/untitled_autogen.dir/AutoRcc_Images_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "Images" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_Images.cpp",
+	"RCC_EXECUTABLE" : "/usr/lib/qt6/libexec/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/home/admin1/Desktop/untitled/build/Desktop-Debug/CMakeFiles/untitled_autogen.dir/AutoRcc_Images_EWIEGA46WW_Used.txt",
+	"SOURCE" : "/home/admin1/Desktop/untitled/Images.qrc",
+	"VERBOSITY" : 0
+}
