@@ -3,7 +3,7 @@
 Bishop::Bishop(Color color, Coordinates coordinates)
     : Piece(color, coordinates, "Bishop") {}
 
-std::vector<Coordinates> Bishop::validator(Board* board) {
+std::vector<Coordinates> Bishop::validator(Board* board, bool filtr) {
   std::vector<Coordinates> possible_moves;
   Coordinates forward = {GetCoordinates().y, GetCoordinates().x};
   Coordinates forward_push;
@@ -13,7 +13,8 @@ std::vector<Coordinates> Bishop::validator(Board* board) {
       if (board->GetPiece(forward.x - k, forward.y + k) == nullptr) {
         forward_push = {forward.y + k, forward.x - k};
         possible_moves.push_back(forward_push);
-      } else if (board->GetPiece(forward.x - k, forward.y + k) != nullptr) {
+      } else if (board->GetPiece(forward.x - k, forward.y + k) != nullptr
+                 /*&&(board->GetPiece(forward.x - k, forward.y + k)->GetName() != "King"*/ ) {
         if (board->GetPiece(forward.x - k, forward.y + k)->GetColor() ==
             enemy_color) {
           forward_push = {forward.y + k, forward.x - k};
@@ -29,7 +30,8 @@ std::vector<Coordinates> Bishop::validator(Board* board) {
           if (board->GetPiece(forward.x + k, forward.y - k) == nullptr) {
               forward_push = {forward.y - k, forward.x + k};
               possible_moves.push_back(forward_push);
-          } else if (board->GetPiece(forward.x + k, forward.y - k) != nullptr) {
+          } else if (board->GetPiece(forward.x + k, forward.y - k) != nullptr /*&&
+                     board->GetPiece(forward.x + k, forward.y - k)->GetName() != "King"*/) {
               if (board->GetPiece(forward.x + k, forward.y - k)->GetColor() ==
                   enemy_color) {
                   forward_push = {forward.y - k, forward.x + k};
@@ -46,7 +48,8 @@ std::vector<Coordinates> Bishop::validator(Board* board) {
           if (board->GetPiece(forward.x + k, forward.y + k) == nullptr) {
               forward_push = {forward.y + k, forward.x + k};
               possible_moves.push_back(forward_push);
-          } else if (board->GetPiece(forward.x + k, forward.y + k) != nullptr) {
+          } else if (board->GetPiece(forward.x + k, forward.y + k) != nullptr
+                     /*&& board->GetPiece(forward.x + k, forward.y + k)->GetName()!= "King"*/) {
               if (board->GetPiece(forward.x + k, forward.y + k)->GetColor() ==
                   enemy_color) {
                   forward_push = {forward.y + k, forward.x + k};
@@ -61,7 +64,8 @@ std::vector<Coordinates> Bishop::validator(Board* board) {
           if (board->GetPiece(forward.x - k, forward.y - k) == nullptr) {
               forward_push = {forward.y - k, forward.x - k};
               possible_moves.push_back(forward_push);
-          } else if (board->GetPiece(forward.x - k, forward.y - k) != nullptr) {
+          } else if (board->GetPiece(forward.x - k, forward.y - k) != nullptr /*&&
+                     board->GetPiece(forward.x - k, forward.y - k)->GetName()!= "King"*/) {
               if (board->GetPiece(forward.x - k, forward.y - k)->GetColor() ==
                   enemy_color) {
                   forward_push = {forward.y - k, forward.x - k};
@@ -71,7 +75,12 @@ std::vector<Coordinates> Bishop::validator(Board* board) {
 
       }
   }
+  std::vector<Coordinates> filtr_moves;
+  if(filtr){
+      board->FiltrMovies(possible_moves,filtr_moves, this, enemy_color);
+      return filtr_moves;
 
+  }
 
 
 

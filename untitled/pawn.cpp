@@ -1,12 +1,13 @@
 #include "pawn.h"
 #include "board.h"
 #include <QDebug>
-std::vector<Coordinates> Pawn::validator(Board* board) {
+std::vector<Coordinates> Pawn::validator(Board* board, bool filtr) {
     std::vector<Coordinates> possible_moves;
     Coordinates forward {0, 0};
     Coordinates forward_two{0, 0};
     Coordinates rightAttack{0, 0};
     Coordinates leftAttack{0, 0};
+    Color enemy_color = GetColor() == WHITE ? BLACK : WHITE;
     Coordinates coordinates_this = this->GetCoordinates();
     if(this->GetColor() == WHITE){
     int direction =  1;
@@ -70,6 +71,12 @@ std::vector<Coordinates> Pawn::validator(Board* board) {
             possible_moves.push_back(leftAttack);
         }
     }
+    std::vector<Coordinates> filtr_moves;
+    if(filtr){
+        board->FiltrMovies(possible_moves,filtr_moves, this, enemy_color);
+        return filtr_moves;
+
+    }
     return possible_moves;
 }
 
@@ -115,6 +122,7 @@ std::vector<Coordinates> Pawn::AllValidator(Board* board){
             possible_moves.push_back(leftAttack);
         }
     }
+
     return possible_moves;
 }
 

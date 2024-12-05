@@ -3,7 +3,7 @@
 Queen::Queen(Color color, Coordinates coordinates)
     : Piece(color, coordinates, "Queen") {}
 
-std::vector<Coordinates> Queen::validator(Board* board) {
+std::vector<Coordinates> Queen::validator(Board* board, bool filtr) {
     std::vector<Coordinates> possible_moves;
     Coordinates forward = {GetCoordinates().y, GetCoordinates().x};
     Coordinates forward_push;
@@ -135,6 +135,11 @@ std::vector<Coordinates> Queen::validator(Board* board) {
             break;
         }
     }
+    std::vector<Coordinates> filtr_moves;
+    if(filtr){
+        board->FiltrMovies(possible_moves,filtr_moves, this, enemy_color);
+        return filtr_moves;
 
+    }
     return possible_moves;
 }

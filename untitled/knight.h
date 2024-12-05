@@ -7,7 +7,7 @@ class Knight : public Piece
 public:
     Knight(Color color, Coordinates coordinates);
 
-    virtual std::vector<Coordinates> validator(Board* board) override;
+    virtual std::vector<Coordinates> validator(Board* board, bool filtr = true) override;
 };
 
 #endif // KNIGHT_H

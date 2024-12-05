@@ -3,7 +3,7 @@
 
 Rook::Rook(Color color, Coordinates coordinates) : Piece(color, coordinates, "Rook") {};
 
-std::vector<Coordinates> Rook::validator(Board* board){
+std::vector<Coordinates> Rook::validator(Board* board, bool filtr){
     std::vector<Coordinates> possible_moves;
     Color enemy_color = GetColor() == WHITE ? BLACK : WHITE;
     Color not_enemy_color = GetColor() == WHITE ? WHITE : BLACK;
@@ -71,6 +71,12 @@ std::vector<Coordinates> Rook::validator(Board* board){
                 break;
             }
         }
+    }
+    std::vector<Coordinates> filtr_moves;
+    if(filtr){
+        board->FiltrMovies(possible_moves,filtr_moves, this, enemy_color);
+        return filtr_moves;
+
     }
     return possible_moves;
 }

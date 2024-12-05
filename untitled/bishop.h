@@ -7,7 +7,7 @@ class Bishop : public Piece
 public:
     Bishop(Color color, Coordinates coordinates);
 
-    virtual std::vector<Coordinates> validator(Board* board) override;
+    virtual std::vector<Coordinates> validator(Board* board, bool filtr = true) override;
 };
 
 #endif // BISHOP_H

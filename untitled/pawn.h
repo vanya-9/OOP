@@ -11,7 +11,7 @@ public:
     Pawn(Color color, Coordinates coordinates) : Piece(color, coordinates, "Pawn")
         {};
 
-    virtual std::vector<Coordinates> validator(Board* board) override;
+    virtual std::vector<Coordinates> validator(Board* board, bool filtr = true) override;
 
     void SetUpdate();
 

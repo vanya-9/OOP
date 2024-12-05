@@ -7,7 +7,7 @@ class Queen : public Piece
 public:
     Queen(Color color, Coordinates coordinates);
 
-    virtual std::vector<Coordinates> validator(Board* board) override;
+    virtual std::vector<Coordinates> validator(Board* board, bool filtr = true) override;
 };
 
 #endif // QUEEN_H

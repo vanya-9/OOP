@@ -201,6 +201,71 @@ void Board::ContentTmpChange(Coordinates coordinates, bool state, Piece* piece){
     }
     else{
         content_[coordinates.y][coordinates.x] = piece;
+        if(piece != nullptr){
+            piece->SetCoordinates(coordinates);
+        }
     }
 
+}
+ // ////////////////////////////////////////////////////////////////////////////////////
+void Board::FiltrMovies(std::vector<Coordinates> possible_movies,
+                        std::vector<Coordinates>& filtr_movies, Piece* piece, Color enemy_color){
+    auto copy_board = this;
+    King* our_king;
+    King* enemy_king;
+    for(int x = 0; x < board_size; x++){
+        for(int y = 0; y < board_size; y++){
+            if(copy_board->GetPiece(x,y) != nullptr &&
+                copy_board->GetPiece(x,y)->GetName() == "King" &&
+                copy_board->GetPiece(x,y)->GetColor() != enemy_color){
+                our_king = dynamic_cast<King*>(copy_board->GetPiece(x,y));
+            }
+            if(copy_board->GetPiece(x,y) != nullptr &&
+                copy_board->GetPiece(x,y)->GetName() == "King" &&
+                copy_board->GetPiece(x,y)->GetColor() == enemy_color){
+                enemy_king = dynamic_cast<King*>(copy_board->GetPiece(x,y));
+            }
+        }
+    }
+    auto piece_start_coordinates = piece->GetCoordinates();
+    auto our_king_coordinates = our_king->GetCoordinates();
+
+    int number_movie = 0;
+    while(number_movie < possible_movies.size()){
+        auto coordinates_to = possible_movies[number_movie];
+        auto tmp_piece = copy_board->GetPiece(coordinates_to.x, coordinates_to.y);
+        copy_board->ContentTmpChange(coordinates_to, true, piece);
+        copy_board->ContentTmpChange(piece_start_coordinates, false);
+        if(!CellIsAttack(copy_board, our_king_coordinates, enemy_color)){
+            if(!(coordinates_to.x == enemy_king->GetCoordinates().x &&
+                coordinates_to.y == enemy_king->GetCoordinates().y)){
+            filtr_movies.push_back(coordinates_to);
+            }
+        }
+        copy_board->ContentTmpChange(coordinates_to, true, tmp_piece);
+        copy_board->ContentTmpChange(piece_start_coordinates, true, piece);
+        number_movie++;
+    }
+}
+
+bool Board::CellIsAttack(Board* board, Coordinates piece_coordinates, Color enemy_color){
+    for(int x = 0; x <board_size; x++){
+        for(int y = 0; y < board_size; y++){
+            if(board->GetPiece(x,y) != nullptr && board->GetPiece(x,y)->GetName()!= "King"
+                &&board->GetPiece(x,y)->GetColor() == enemy_color){
+                auto enemy_piece = board->GetPiece(x,y);
+                auto enemy_movies = enemy_piece->validator(board, false);
+                for(auto& move : enemy_movies){
+                    if(piece_coordinates.x == move.x &&
+                        piece_coordinates.y == move.y){
+                        return true;
+                    }
+                }
+
+
+            }
+
+        }
+    }
+    return false;
 }

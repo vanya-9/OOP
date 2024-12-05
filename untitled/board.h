@@ -22,6 +22,9 @@ public:
     Piece* GetPiece(int y, int x);
 
     void SetPiece(Piece* piece, Coordinates new_coordinates);
+    bool CellIsAttack(Board* board, Coordinates piece_coordinates, Color enemy_color);
+    void FiltrMovies(std::vector<Coordinates> possible_movies,
+                std::vector<Coordinates>& filtr_movies, Piece* piece, Color enemy_color);
 
 signals:
     void ChooseFigure(Piece* Pawn);

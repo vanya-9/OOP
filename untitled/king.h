@@ -7,8 +7,8 @@ class King : public Piece
     bool is_attack_ = true;
 public:
     King(Color color, Coordinates coordinates);
-    virtual std::vector<Coordinates> validator(Board* board) override;
-    bool IsAttack(Coordinates coordinates, Board* board, bool validator_rokirovka = false);
+    virtual std::vector<Coordinates> validator(Board* board, bool filtr = true) override;
+    bool IsAttack(Piece* piece, Coordinates piece_coordinates, Coordinates coordinates_to, Board* board);
 };
 
 #endif // KING_H

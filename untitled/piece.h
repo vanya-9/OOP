@@ -20,7 +20,7 @@ public:
 
     Color GetColor();
 
-    virtual std::vector<Coordinates> validator(Board* board) = 0;
+    virtual std::vector<Coordinates> validator(Board* board, bool filtr = true) = 0;
 
     Coordinates GetCoordinates();
 
