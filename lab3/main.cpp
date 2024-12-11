@@ -6,7 +6,7 @@ template<class T>
 class IObserver {
  public:
   virtual ~IObserver(){};
-  virtual void onEvent(const T &message_from_subject) = 0;
+  virtual void onEvent(const T &event_data) = 0;
 };
 
 template<class T>
@@ -71,8 +71,8 @@ class Observer : public IObserver<T> {
     std::cout << "Goodbye, I was the Observer \"" << this->number_ << "\".\n";
   }
 
-  void onEvent(const std::string &message_from_subject) override {
-    message_from_subject_ = message_from_subject;
+  void onEvent(const T &event_data) override {
+    message_from_subject_ = event_data;
     PrintInfo();
   }
   void RemoveMeFromTheList() {
@@ -84,7 +84,7 @@ class Observer : public IObserver<T> {
   }
 
  private:
-  std::string message_from_subject_;
+  T message_from_subject_;
   Subject<T> &subject_;
   static int static_number_;
   int number_;
