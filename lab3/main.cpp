@@ -1,14 +1,19 @@
 #include <iostream>
 #include <list>
-#include <string>
 #include <memory>
+#include <string>
 
+typedef struct CustomEvent {
+  size_t despositing_money;
+  size_t client_id;
+  std::string client_name;
+} CustomEvent;
 
 template <typename T>
 class IObserver {
  public:
   virtual ~IObserver() {}
-  virtual void onEvent(const T &event_data) = 0;
+  virtual void onEvent(const T& event_data) = 0;
 };
 
 template <typename T>
@@ -23,21 +28,21 @@ class ISubject {
 template <typename T>
 class Subject : public ISubject<T> {
  public:
-    Subject();
+  Subject();
   virtual ~Subject();
 
   void Attach(std::shared_ptr<IObserver<T>> observer) override;
-  void Detach(std::shared_ptr<IObserver<T>> observer)override;
-  void Notify(const T& event_data)override;
+  void Detach(std::shared_ptr<IObserver<T>> observer) override;
+  void Notify(const T& event_data) override;
 
   void CreateEvent(T data_event);
   void HowManyObserver();
-   void SetData(T data_event);
+  void SetData(T data_event);
 
  private:
- class SubjectImpl;
+  class SubjectImpl;
   std::list<std::shared_ptr<IObserver<T>>> list_observer_;
-  
+
   std::unique_ptr<SubjectImpl> pimpl;
 };
 
@@ -47,49 +52,50 @@ Subject<T>::Subject() : pimpl{std::make_unique<SubjectImpl>()} {}
 template <typename T>
 Subject<T>::~Subject() {
   std::cout << "Goodbye, I was the Subject.\n";
-} 
+}
 
 template <typename T>
 void Subject<T>::Attach(std::shared_ptr<IObserver<T>> observer) {
-    pimpl->Attach(observer);
+  pimpl->Attach(observer);
 }
 
 template <typename T>
 void Subject<T>::Detach(std::shared_ptr<IObserver<T>> observer) {
-    pimpl->Detach(observer);
+  pimpl->Detach(observer);
 }
 
 template <typename T>
-void Subject<T>::SetData(T data_event){
-    pimpl->SetData(data_event);
+void Subject<T>::SetData(T data_event) {
+  pimpl->SetData(data_event);
 }
 
 template <typename T>
 void Subject<T>::Notify(const T& data_event) {
-    pimpl->Notify(data_event);
+  pimpl->Notify(data_event);
 }
 
-template<typename T>
+template <typename T>
 void Subject<T>::CreateEvent(T data_event) {
-    // this->data_ = data_event;
-    pimpl->SetData(data_event);
-    Notify(data_event);
+  // this->data_ = data_event;
+  pimpl->SetData(data_event);
+  Notify(data_event);
 }
-template<typename T>
-class Subject<T>::SubjectImpl{
-    private:
-    std::list<std::shared_ptr<IObserver<T>>> list_observer_;
-    T data_;
-    public:
-    void Attach(std::shared_ptr<IObserver<T>> observer)  {
+template <typename T>
+class Subject<T>::SubjectImpl {
+ private:
+  std::list<std::shared_ptr<IObserver<T>>> list_observer_;
+  T data_;
+
+ public:
+  void Attach(std::shared_ptr<IObserver<T>> observer) {
     list_observer_.push_back(observer);
   }
-  void Detach(std::shared_ptr<IObserver<T>> observer)  {
+  void Detach(std::shared_ptr<IObserver<T>> observer) {
     list_observer_.remove(observer);
   }
-  void Notify(const T& event_data)  {
+  void Notify(const T& event_data) {
     HowManyObserver();
-    for (auto &observer : list_observer_) {
+    for (auto& observer : list_observer_) {
       observer->onEvent(event_data);
     }
   }
@@ -99,43 +105,42 @@ class Subject<T>::SubjectImpl{
     Notify(data_);
   }
   void HowManyObserver() {
-    std::cout << "There are " << list_observer_.size() << " observers in the list.\n";
-  }
-  
-  void SetData(T data_event){
-    data_ = data_event;
+    std::cout << "There are " << list_observer_.size()
+              << " observers in the list.\n";
   }
 
-
+  void SetData(T data_event) { data_ = data_event; }
 };
 
-
 template <typename T>
-class ConsoleObserver : public IObserver<T>, public std::enable_shared_from_this<ConsoleObserver<T>> {
+class ConsoleObserver
+    : public IObserver<T>,
+      public std::enable_shared_from_this<ConsoleObserver<T>> {
  public:
   ConsoleObserver(std::shared_ptr<Subject<T>> subject) : subject_(subject) {
-    std::cout << "Hi, I'm the Observer \"" << ++ConsoleObserver::static_number_ << "\".\n";
+    std::cout << "Hi, I'm the Observer \"" << ++ConsoleObserver::static_number_
+              << "\".\n";
     this->number_ = ConsoleObserver::static_number_;
   }
   virtual ~ConsoleObserver() {
     std::cout << "Goodbye, I was the Observer \"" << this->number_ << "\".\n";
   }
 
-  void onEvent(const T &event_data) override {
+  void onEvent(const T& event_data) override {
     data_ = event_data;
-    PrintInfo();
+    PrintInfo(event_data);
   }
   void RemoveMeFromTheList() {
     subject_->Detach(this->shared_from_this());
     std::cout << "Observer \"" << number_ << "\" removed from the list.\n";
   }
-  void PrintInfo() {
-    std::cout << "Observer \"" << this->number_ << "\": EventData --> " << this->data_ << "\n";
+
+  void PrintInfo(const T& event_data) {
+    std::cout << "Observer \"" << this->number_ << "\": EventData --> "
+              << event_data << "\n";
   }
 
-  void Setting() {
-    subject_->Attach(this->shared_from_this());
-  }
+  void Setting() { subject_->Attach(this->shared_from_this()); }
 
  private:
   T data_;
@@ -144,15 +149,41 @@ class ConsoleObserver : public IObserver<T>, public std::enable_shared_from_this
   int number_;
 };
 
+template <>
+void ConsoleObserver<CustomEvent>::PrintInfo(const CustomEvent& event_data) {
+  std::cout << "Observer \"" << this->number_ << "\": EventDataMoney --> "
+            << event_data.despositing_money
+            << "\n"
+               "\": EventDataId --> "
+            << event_data.client_id
+            << "\n"
+               "\": EventDataName --> "
+            << event_data.client_name << "\n";
+}
+
 template <typename T>
 int ConsoleObserver<T>::static_number_ = 0;
 
 void ClientCode() {
-  auto subject2 = std::make_shared<Subject<int>>();
-  auto int_observer = std::make_shared<ConsoleObserver<int>>(subject2);
+  auto subject_int_type = std::make_shared<Subject<int>>();
+  auto int_observer = std::make_shared<ConsoleObserver<int>>(subject_int_type);
   int_observer->Setting();
-  subject2->CreateEvent(25);
+  subject_int_type->CreateEvent(25);
   int_observer->RemoveMeFromTheList();
+
+  auto subject_string_type = std::make_shared<Subject<std::string>>();
+  auto sting_observer =
+      std::make_shared<ConsoleObserver<std::string>>(subject_string_type);
+  sting_observer->Setting();
+  subject_string_type->CreateEvent("Pricolvkontakte");
+  sting_observer->RemoveMeFromTheList();
+
+  auto subject_custom_type = std::make_shared<Subject<CustomEvent>>();
+  auto custom_observer =
+      std::make_shared<ConsoleObserver<CustomEvent>>(subject_custom_type);
+  custom_observer->Setting();
+  subject_custom_type->CreateEvent({1412, 4214, "boris"});
+  custom_observer->RemoveMeFromTheList();
 }
 
 int main() {
