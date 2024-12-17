@@ -11,11 +11,12 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 
 template <
     typename AbstractProduct,
     typename IdentifierType,
-    typename ProductCreator = std::function<AbstractProduct*(Color, Coordinates)>
+    typename ProductCreator = std::function<std::shared_ptr<AbstractProduct>(Color, Coordinates)>
     >
 class Factory {
 public:
@@ -27,7 +28,7 @@ public:
         return creators_.erase(id) == 1;
     }
 
-    AbstractProduct* CreateObject(const IdentifierType& id, Color color, Coordinates coordinates) const {
+    std::shared_ptr<AbstractProduct> CreateObject(const IdentifierType& id, Color color, Coordinates coordinates) const {
         auto it = creators_.find(id);
         if (it != creators_.end()) {
             return (it->second)(color, coordinates);

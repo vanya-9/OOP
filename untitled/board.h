@@ -8,30 +8,30 @@
 class Board : public QObject
 {
     Q_OBJECT
-    Piece* content_[board_size][board_size];
-    Factory<Piece, int, std::function<Piece*(Color, Coordinates)>> factory_;
+    std::shared_ptr<Piece> content_[board_size][board_size];
+    Factory<Piece, int, std::function<std::shared_ptr<Piece>(Color, Coordinates)>> factory_;
 
 
 public:
     Board();
 
-    void ContentTmpChange(Coordinates coordinates, bool state, Piece* piece = nullptr);
+    void ContentTmpChange(Coordinates coordinates, bool state,  std::shared_ptr<Piece> piece = nullptr);
 
     void SetDefault();
 
-    Piece* GetPiece(int y, int x);
+     std::shared_ptr<Piece> GetPiece(int y, int x);
 
-    void SetPiece(Piece* piece, Coordinates new_coordinates);
+    void SetPiece( std::shared_ptr<Piece> piece, Coordinates new_coordinates);
     bool CellIsAttack(Board* board, Coordinates piece_coordinates, Color enemy_color);
     void FiltrMovies(std::vector<Coordinates> possible_movies,
-                     std::vector<Coordinates>& filtr_movies, Piece* piece, Color enemy_color);
+                     std::vector<Coordinates>& filtr_movies,  std::shared_ptr<Piece> piece, Color enemy_color);
 
 signals:
-    void ChooseFigure(Piece* Pawn);
+    void ChooseFigure( std::shared_ptr<Piece> Pawn);
     void UpdateFigure();
 
 public slots:
-    void onTransformationChosen(int chosen_figure, Piece* pawn);
+    void onTransformationChosen(int chosen_figure,  std::shared_ptr<Piece> pawn);
 };
 
 #endif // BOARD_H

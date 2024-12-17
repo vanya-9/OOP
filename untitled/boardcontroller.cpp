@@ -10,7 +10,7 @@ BoardController::BoardController(Board* board,
 
 void BoardController::handleCellClick(int x, int y) {
     Color turncolor = turn_to_walk % 2 == 0  ? WHITE : BLACK;
-    Piece* clickedPiece = board_->GetPiece(x, y);
+    std::shared_ptr<Piece> clickedPiece = board_->GetPiece(x, y);
     if (x >= 0 && x <= 7 && y >= 0 && y <= 7 ) {
         if (clickedPiece != nullptr && board_->GetPiece(x, y)->GetColor() == turncolor) {
             if (selected_piece_ != nullptr &&
@@ -36,12 +36,12 @@ void BoardController::handleCellClick(int x, int y) {
     }
 }
 
-void BoardController::highlightMoves(Piece* piece) {
+void BoardController::highlightMoves(std::shared_ptr<Piece> piece) {
     auto possible_moves = piece->validator(board_);
     graphic_board_->highlightPossibleMoves(possible_moves);
 }
 
-void BoardController::movePieceTo(Piece* piece,
+void BoardController::movePieceTo(std::shared_ptr<Piece> piece,
                                   const Coordinates& target_coords) {
     board_->SetPiece(piece, target_coords);
     graphic_board_->clearHighlights();

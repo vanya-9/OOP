@@ -4,6 +4,7 @@
 #include <QObject>
 #include "board.h"
 #include "graphicboard.h"
+#include <memory>
 
 class BoardController : public QObject {
     Q_OBJECT
@@ -17,10 +18,10 @@ public slots:
 private:
     Board* board_;
     GraphicBoard* graphic_board_;
-    Piece* selected_piece_ = nullptr;
+    std::shared_ptr<Piece> selected_piece_ = nullptr;
 
-    void highlightMoves(Piece* piece);
-    void movePieceTo(Piece* piece, const Coordinates& target_coords);
+    void highlightMoves(std::shared_ptr<Piece> piece);
+    void movePieceTo(std::shared_ptr<Piece> piece, const Coordinates& target_coords);
 };
 
 #endif // BOARDCONTROLLER_H

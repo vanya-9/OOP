@@ -16,7 +16,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
     if (forward_up.y >= 0 && (board->GetPiece(forward_up.x, forward_up.y) == nullptr ||
                               (board->GetPiece(forward_up.x, forward_up.y)->GetColor() == enemy_color &&
                                !board->GetPiece(forward_up.x, forward_up.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_up, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_up, board)) {
         possible_moves.push_back(forward_up);
     }
 
@@ -25,7 +25,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         (board->GetPiece(forward_up_left.x, forward_up_left.y) == nullptr ||
          (board->GetPiece(forward_up_left.x, forward_up_left.y)->GetColor() == enemy_color &&
           !board->GetPiece(forward_up_left.x, forward_up_left.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_up_left, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_up_left, board)) {
         possible_moves.push_back(forward_up_left);
     }
 
@@ -34,7 +34,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         (board->GetPiece(forward_up_right.x, forward_up_right.y) == nullptr ||
          (board->GetPiece(forward_up_right.x, forward_up_right.y)->GetColor() == enemy_color &&
           !board->GetPiece(forward_up_right.x, forward_up_right.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_up_right, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_up_right, board)) {
         possible_moves.push_back(forward_up_right);
     }
 
@@ -45,7 +45,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         (board->GetPiece(forward_right.x, forward_right.y) == nullptr ||
          (board->GetPiece(forward_right.x, forward_right.y)->GetColor() == enemy_color &&
           !board->GetPiece(forward_right.x, forward_right.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_right, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_right, board)) {
         possible_moves.push_back(forward_right);
     }
 
@@ -56,7 +56,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         (board->GetPiece(forward_left.x, forward_left.y) == nullptr ||
          (board->GetPiece(forward_left.x, forward_left.y)->GetColor() == enemy_color &&
           !board->GetPiece(forward_left.x, forward_left.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_left, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_left, board)) {
         possible_moves.push_back(forward_left);
     }
     Coordinates forward_dawn = {GetCoordinates().y + 1, GetCoordinates().x};
@@ -65,7 +65,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         (board->GetPiece(forward_dawn.x, forward_dawn.y) == nullptr ||
          (board->GetPiece(forward_dawn.x, forward_dawn.y)->GetColor() == enemy_color &&
           !board->GetPiece(forward_dawn.x, forward_dawn.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_dawn, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_dawn, board)) {
         possible_moves.push_back(forward_dawn);
     }
 
@@ -75,7 +75,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         (board->GetPiece(forward_dawn_left.x, forward_dawn_left.y) == nullptr ||
          (board->GetPiece(forward_dawn_left.x, forward_dawn_left.y)->GetColor() == enemy_color &&
           !board->GetPiece(forward_dawn_left.x, forward_dawn_left.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_dawn_left, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_dawn_left, board)) {
         possible_moves.push_back(forward_dawn_left);
     }
 
@@ -85,7 +85,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         (board->GetPiece(forward_dawn_right.x, forward_dawn_right.y) == nullptr ||
          (board->GetPiece(forward_dawn_right.x, forward_dawn_right.y)->GetColor() == enemy_color &&
           !board->GetPiece(forward_dawn_right.x, forward_dawn_right.y)->is_king)) &&
-        !IsAttack(this, this->GetCoordinates(), forward_dawn_right, board)) {
+        !IsAttack(shared_from_this(), this->GetCoordinates(), forward_dawn_right, board)) {
         possible_moves.push_back(forward_dawn_right);
     }
     rokirovka = false; //при других вызовах валидатора тут может обновиться значение рокировки,
@@ -95,8 +95,8 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
     Coordinates short_rokirovka_coordinates = {0, 6};
     short_rokirovka_coordinates.y = GetColor() == WHITE ? 0 : 7;
     Color friendly_color = GetColor() == WHITE ? WHITE : BLACK;
-    if(this->first_move == true && !IsAttack(this, this->GetCoordinates(), this->GetCoordinates(), board) &&
-        !IsAttack(this, this->GetCoordinates(), short_rokirovka_coordinates, board) &&
+    if(this->first_move == true && !IsAttack(shared_from_this(), this->GetCoordinates(), this->GetCoordinates(), board) &&
+        !IsAttack(shared_from_this(), this->GetCoordinates(), short_rokirovka_coordinates, board) &&
         (short_rokirovka_coordinates.y == 7  || short_rokirovka_coordinates.y == 0) &&
         short_rokirovka_coordinates.x - 1 >= 0 &&  GetColor() == friendly_color &&
         board->GetPiece(short_rokirovka_coordinates.x, short_rokirovka_coordinates.y) == nullptr &&
@@ -113,8 +113,8 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
     }
     Coordinates long_rokirovka_coordinates = {7, 2};
     long_rokirovka_coordinates.y = GetColor() == WHITE ? 0 : 7;
-    if(this->first_move == true && !IsAttack(this, this->GetCoordinates(), this->GetCoordinates(), board) &&//двигаю короля на его координаты, смотря что он не под атакой
-        !IsAttack(this, this->GetCoordinates(), long_rokirovka_coordinates, board) &&
+    if(this->first_move == true && !IsAttack(shared_from_this(), this->GetCoordinates(), this->GetCoordinates(), board) &&//двигаю короля на его координаты, смотря что он не под атакой
+        !IsAttack(shared_from_this(), this->GetCoordinates(), long_rokirovka_coordinates, board) &&
         (long_rokirovka_coordinates.y == 7  || long_rokirovka_coordinates.y == 0) &&
         long_rokirovka_coordinates.x - 2 >= 0 && long_rokirovka_coordinates.x + 3 <= 7 &&long_rokirovka_coordinates.y <= 7 &&
         GetColor() == friendly_color &&
@@ -132,11 +132,11 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
 }
 
 // !king->IsAttack(this, current_coords, move, board)
-bool King::IsAttack(Piece* piece, Coordinates piece_coordinates, Coordinates coordinates_to, Board* board){
+bool King::IsAttack(std::shared_ptr<Piece> piece, Coordinates piece_coordinates, Coordinates coordinates_to, Board* board){
     Color enemy_color = piece->GetColor() == WHITE ? BLACK : WHITE;
-    Piece* enemy_king;
+    std::shared_ptr<Piece> enemy_king;
     if(enemy_color == BLACK) {qDebug() << "WHITECRASH";}
-    Piece* our_king;
+    std::shared_ptr<Piece> our_king;
     for(int x = 0; x < board_size; x++){
         for(int y = 0; y < board_size; y++){
             if (board->GetPiece(x,y) !=nullptr && board->GetPiece(x,y)->GetName() == "King" &&
@@ -172,7 +172,7 @@ bool King::IsAttack(Piece* piece, Coordinates piece_coordinates, Coordinates coo
 
 
 
-    Piece* tmp_piece = board->GetPiece(coordinates_to.x, coordinates_to.y);
+    auto tmp_piece = board->GetPiece(coordinates_to.x, coordinates_to.y);
     //Coordinates tmp_coordinates = board->GetPiece(coordinates_to.x, coordinates_to.y)->GetCoordinates();
     board->ContentTmpChange(coordinates_to, true, piece);// переставил коня
     if(piece->GetName() != "King" && piece_coordinates.x != coordinates_to.x &&

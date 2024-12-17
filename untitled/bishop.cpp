@@ -77,7 +77,7 @@ std::vector<Coordinates> Bishop::validator(Board* board, bool filtr) {
   }
   std::vector<Coordinates> filtr_moves;
   if(filtr){
-      board->FiltrMovies(possible_moves,filtr_moves, this, enemy_color);
+      board->FiltrMovies(possible_moves,filtr_moves, shared_from_this(), enemy_color);
       return filtr_moves;
 
   }

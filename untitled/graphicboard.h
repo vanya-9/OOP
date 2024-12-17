@@ -21,23 +21,23 @@ public:
 
 signals:
     void cellClicked(int x, int y);
-    void transformationChosen(int chosen_figure, Piece*pawn);
+    void transformationChosen(int chosen_figure, std::shared_ptr<Piece>pawn);
 
 
 
 private:
     QGraphicsScene *scene_;
     Board* board_;
-    Piece* selected_piece_ = nullptr;     // Указатель на выбранную фигуру (для подсветки)
+    std::shared_ptr<Piece> selected_piece_ = nullptr;     // Указатель на выбранную фигуру (для подсветки)
     std::vector<QGraphicsRectItem*> highlighted_cells_;
     std::map<std::pair<int, int>, QGraphicsPixmapItem*> piece_items_;
-    void transformPawn(Piece* pawn, const int new_type);
+    void transformPawn(std::shared_ptr<Piece> pawn, const int new_type);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
 
 public slots:
-    void ChooseTransform(Piece* pawn);
+    void ChooseTransform(std::shared_ptr<Piece> pawn);
     void UpdateFigure();
 
 };

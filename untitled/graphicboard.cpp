@@ -59,7 +59,7 @@ void GraphicBoard::drawPieces(bool update) {
 
     for (int row = 0; row < 8; ++row) {
         for (int col = 0; col < 8; ++col) {
-            Piece* piece = board_->GetPiece(col, row);
+            std::shared_ptr<Piece> piece = board_->GetPiece(col, row);
 
             //проверка на повторную отрисовку фигур
             auto cell = std::make_pair(row, col);
@@ -69,42 +69,42 @@ void GraphicBoard::drawPieces(bool update) {
                     piece_items_.erase(cell);
                 }
 
-                if (dynamic_cast<Pawn*>(piece) && piece->GetColor() == WHITE) {
+                if (piece->GetName() == "Pawn" && piece->GetColor() == WHITE) {
                     drawTypePiece(piece_items_,":/Image/w_pawn.svg", row, col);
                 }
 
-                if (dynamic_cast<Pawn*>(piece) && piece->GetColor() == BLACK) {
+                if (piece->GetName() == "Pawn" && piece->GetColor() == BLACK) {
                     drawTypePiece(piece_items_,":/Image/b_pawn.svg", row, col);
                 }
 
-                if (dynamic_cast<Rook*>(piece) && piece->GetColor() == WHITE) {
+                if (piece->GetName() == "Rook" && piece->GetColor() == WHITE) {
                     drawTypePiece(piece_items_,":/Image/w_rook.svg", row, col);
                 }
-                if (dynamic_cast<Rook*>(piece) && piece->GetColor() == BLACK) {
+                if (piece->GetName() == "Rook" && piece->GetColor() == BLACK) {
                     drawTypePiece(piece_items_,":/Image/b_rook.svg", row, col);
                 }
-                if (dynamic_cast<Knight*>(piece) && piece->GetColor() == WHITE) {
+                if (piece->GetName() == "Knight" && piece->GetColor() == WHITE) {
                     drawTypePiece(piece_items_,":/Image/w_knight.svg", row, col);
                 }
-                if (dynamic_cast<Knight*>(piece) && piece->GetColor() == BLACK) {
+                if (piece->GetName() == "Knight" && piece->GetColor() == BLACK) {
                     drawTypePiece(piece_items_,":/Image/b_knight.svg", row, col);
                 }
-                if (dynamic_cast<Bishop*>(piece) && piece->GetColor() == WHITE) {
+                if (piece->GetName() == "Bishop" && piece->GetColor() == WHITE) {
                     drawTypePiece(piece_items_,":/Image/w_bishop.svg", row, col);
                 }
-                if (dynamic_cast<Bishop*>(piece) && piece->GetColor() == BLACK) {
+                if (piece->GetName() == "Bishop" && piece->GetColor() == BLACK) {
                     drawTypePiece(piece_items_,":/Image/b_bishop.svg", row, col);
                 }
-                if (dynamic_cast<Queen*>(piece) && piece->GetColor() == WHITE) {
+                if (piece->GetName() == "Queen" && piece->GetColor() == WHITE) {
                     drawTypePiece(piece_items_,":/Image/w_queen.svg", row, col);
                 }
-                if (dynamic_cast<Queen*>(piece) && piece->GetColor() == BLACK) {
+                if (piece->GetName() == "Queen" && piece->GetColor() == BLACK) {
                     drawTypePiece(piece_items_,":/Image/b_queen.svg", row, col);
                 }
-                if (dynamic_cast<King*>(piece) && piece->GetColor() == WHITE) {
+                if (piece->GetName() == "King" && piece->GetColor() == WHITE) {
                     drawTypePiece(piece_items_,":/Image/w_king.svg", row, col);
                 }
-                if (dynamic_cast<King*>(piece) && piece->GetColor() == BLACK) {
+                if (piece->GetName() == "King" && piece->GetColor() == BLACK) {
                     drawTypePiece(piece_items_,":/Image/b_king.svg", row, col);
                 }
 
@@ -166,7 +166,7 @@ void GraphicBoard::mousePressEvent(QMouseEvent* event) {
     }
 }
 
-void GraphicBoard::ChooseTransform(Piece* pawn){
+void GraphicBoard::ChooseTransform(std::shared_ptr<Piece> pawn){
     auto *promotion_dialog = new QWidget();
     QVBoxLayout *layout = new QVBoxLayout();
 

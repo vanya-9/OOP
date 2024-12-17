@@ -3,10 +3,11 @@
 #include "logic.h"
 //#include "string"
 #include "vector"
+#include <memory>
 
 class Board;
 
-class Piece
+class Piece : public std::enable_shared_from_this<Piece>
 {
     Color color_;
     Coordinates coordinates_;

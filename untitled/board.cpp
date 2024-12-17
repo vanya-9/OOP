@@ -1,25 +1,30 @@
 #include "board.h"
 #include <QDebug>
 /*namespace*/
-Piece* CreatePawn(Color color, Coordinates coordinates) {
-    return new Pawn(color, coordinates);}
-
-Piece* CreateRook(Color color, Coordinates coordinates) {
-    return new Rook(color, coordinates);}
-
-Piece* CreateKnight(Color color, Coordinates coordinates) {
-    return new Knight(color, coordinates);}
-
-Piece* CreateBishop(Color color, Coordinates coordinates) {
-    return new Bishop(color, coordinates);}
-
-Piece* CreateQueen(Color color, Coordinates coordinates) {
-    return new Queen(color, coordinates);}
-
-
-Piece* CreateKing(Color color, Coordinates coordinates) {
-    return new King(color, coordinates);
+std::shared_ptr<Piece> CreatePawn(Color color, Coordinates coordinates) {
+    return std::make_shared<Pawn>(color, coordinates);
 }
+
+std::shared_ptr<Piece> CreateRook(Color color, Coordinates coordinates) {
+    return std::make_shared<Rook>(color, coordinates);
+}
+
+std::shared_ptr<Piece> CreateKnight(Color color, Coordinates coordinates) {
+    return std::make_shared<Knight>(color, coordinates);
+}
+
+std::shared_ptr<Piece> CreateBishop(Color color, Coordinates coordinates) {
+    return std::make_shared<Bishop>(color, coordinates);
+}
+
+std::shared_ptr<Piece> CreateQueen(Color color, Coordinates coordinates) {
+    return std::make_shared<Queen>(color, coordinates);
+}
+
+std::shared_ptr<Piece> CreateKing(Color color, Coordinates coordinates) {
+    return std::make_shared<King>(color, coordinates);
+}
+
 
 
 
@@ -92,18 +97,18 @@ void Board::SetDefault() {
 }
 
 
-Piece* Board::GetPiece(int x, int y){
+std::shared_ptr<Piece> Board::GetPiece(int x, int y){
     return content_[y][x];
 }
 
-void Board::SetPiece(Piece* piece, Coordinates new_coordinates) {
+void Board::SetPiece(std::shared_ptr<Piece> piece, Coordinates new_coordinates) {
     if (new_coordinates.y < 0 || new_coordinates.y >= board_size ||
         new_coordinates.x < 0 || new_coordinates.x >= board_size) {
         return;
     }
 
     if(rokirovka == true && (new_coordinates.y == 7 || new_coordinates.y == 0) && (new_coordinates.x == 6 || new_coordinates.x == 2)){
-        Piece* rook;
+        std::shared_ptr<Piece> rook;
         Coordinates king_new_coords;
         Coordinates rook_new_coords ;
         if(new_coordinates.x == 6){
@@ -137,7 +142,7 @@ void Board::SetPiece(Piece* piece, Coordinates new_coordinates) {
     for (const auto& coordinates : possible_moves) {
         if (coordinates.y == new_coordinates.y && coordinates.x == new_coordinates.x) {
             if (this->GetPiece(new_coordinates.y, new_coordinates.x) != nullptr) {
-                std::shared_ptr<Piece> shared_ptr(content_[new_coordinates.y][new_coordinates.x]);
+                //std::shared_ptr<Piece> shared_ptr(content_[new_coordinates.y][new_coordinates.x]);
                 content_[new_coordinates.y][new_coordinates.x] = nullptr;
             }
 
@@ -149,8 +154,8 @@ void Board::SetPiece(Piece* piece, Coordinates new_coordinates) {
             if ((piece->GetColor() == BLACK && new_coordinates.y == 0) ||
                 (piece->GetColor() == WHITE && new_coordinates.y == 7)) {
 
-                if (dynamic_cast<Pawn*>(piece)) {
-                    dynamic_cast<Pawn*>(piece)->SetUpdate();
+                if (std::shared_ptr<Pawn> pawn = std::dynamic_pointer_cast<Pawn>(piece)) {
+                    pawn->SetUpdate();
                     emit ChooseFigure(piece);
 
                 }
@@ -160,42 +165,42 @@ void Board::SetPiece(Piece* piece, Coordinates new_coordinates) {
 }
 
 
-void Board::onTransformationChosen(int chosen_figure, Piece* pawn)
+void Board::onTransformationChosen(int chosen_figure, std::shared_ptr<Piece> pawn)
 {
 
     Coordinates current_coords = pawn->GetCoordinates();
-
-    Piece* newPiece = nullptr;
+//std::make_shared<Queen>(color, coordinates);
+    std::shared_ptr<Piece> newPiece = nullptr;
     switch (chosen_figure) {
         if (this->GetPiece(current_coords.y, current_coords.x) != nullptr) {
-            delete content_[current_coords.y][current_coords.x];
+            // delete content_[current_coords.y][current_coords.x];
             content_[current_coords.y][current_coords.x] = nullptr;
         }
     case QUEEN:
-        newPiece = new Queen(pawn->GetColor(), current_coords);
+        newPiece = std::make_shared<Queen>(pawn->GetColor(), current_coords);
         content_[current_coords.y][current_coords.x] = newPiece;
         break;
     case ROOK:
-        newPiece = new Rook(pawn->GetColor(), current_coords);
+        newPiece = std::make_shared<Rook>(pawn->GetColor(), current_coords);
         content_[current_coords.y][current_coords.x] = newPiece;
         break;
     case BISHOP:
-        newPiece = new Bishop(pawn->GetColor(), current_coords);
+        newPiece = std::make_shared<Bishop>(pawn->GetColor(), current_coords);
         content_[current_coords.y][current_coords.x] = newPiece;
         break;
     case KNIGHT:
-        newPiece = new Knight(pawn->GetColor(), current_coords);
+        newPiece = std::make_shared<Knight>(pawn->GetColor(), current_coords);
         content_[current_coords.y][current_coords.x] = newPiece;
         break;
     }
 
     SetPiece(newPiece, current_coords);
-    delete pawn;
+    // delete pawn;
     emit UpdateFigure();
 
 }
 
-void Board::ContentTmpChange(Coordinates coordinates, bool state, Piece* piece){
+void Board::ContentTmpChange(Coordinates coordinates, bool state, std::shared_ptr<Piece> piece){
     if (!state){
         content_[coordinates.y][coordinates.x] = nullptr;
     }
@@ -209,21 +214,22 @@ void Board::ContentTmpChange(Coordinates coordinates, bool state, Piece* piece){
 }
  // ////////////////////////////////////////////////////////////////////////////////////
 void Board::FiltrMovies(std::vector<Coordinates> possible_movies,
-                        std::vector<Coordinates>& filtr_movies, Piece* piece, Color enemy_color){
+                        std::vector<Coordinates>& filtr_movies, std::shared_ptr<Piece> piece, Color enemy_color){
     auto copy_board = this;
-    King* our_king;
-    King* enemy_king;
-    for(int x = 0; x < board_size; x++){
-        for(int y = 0; y < board_size; y++){
-            if(copy_board->GetPiece(x,y) != nullptr &&
-                copy_board->GetPiece(x,y)->GetName() == "King" &&
-                copy_board->GetPiece(x,y)->GetColor() != enemy_color){
-                our_king = dynamic_cast<King*>(copy_board->GetPiece(x,y));
+    std::shared_ptr<King> our_king;
+    std::shared_ptr<King> enemy_king;
+
+    for (int x = 0; x < board_size; x++) {
+        for (int y = 0; y < board_size; y++) {
+            if (copy_board->GetPiece(x, y) != nullptr &&
+                copy_board->GetPiece(x, y)->GetName() == "King" &&
+                copy_board->GetPiece(x, y)->GetColor() != enemy_color) {
+                our_king = std::dynamic_pointer_cast<King>(copy_board->GetPiece(x, y));
             }
-            if(copy_board->GetPiece(x,y) != nullptr &&
-                copy_board->GetPiece(x,y)->GetName() == "King" &&
-                copy_board->GetPiece(x,y)->GetColor() == enemy_color){
-                enemy_king = dynamic_cast<King*>(copy_board->GetPiece(x,y));
+            if (copy_board->GetPiece(x, y) != nullptr &&
+                copy_board->GetPiece(x, y)->GetName() == "King" &&
+                copy_board->GetPiece(x, y)->GetColor() == enemy_color) {
+                enemy_king = std::dynamic_pointer_cast<King>(copy_board->GetPiece(x, y));
             }
         }
     }
