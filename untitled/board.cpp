@@ -1,6 +1,6 @@
 #include "board.h"
 #include <QDebug>
-namespace {
+/*namespace*/
 Piece* CreatePawn(Color color, Coordinates coordinates) {
     return new Pawn(color, coordinates);}
 
@@ -20,7 +20,7 @@ Piece* CreateQueen(Color color, Coordinates coordinates) {
 Piece* CreateKing(Color color, Coordinates coordinates) {
     return new King(color, coordinates);
 }
-}
+
 
 
 Board::Board() {
@@ -29,6 +29,7 @@ Board::Board() {
             content_[i][j] = nullptr;
         }
     }
+    SetDefault();
 }
 
 void Board::SetDefault() {
@@ -132,12 +133,11 @@ void Board::SetPiece(Piece* piece, Coordinates new_coordinates) {
         piece->first_move = false;
         return;
     }
-
     auto possible_moves = piece->validator(this);
     for (const auto& coordinates : possible_moves) {
         if (coordinates.y == new_coordinates.y && coordinates.x == new_coordinates.x) {
             if (this->GetPiece(new_coordinates.y, new_coordinates.x) != nullptr) {
-                delete content_[new_coordinates.y][new_coordinates.x];
+                std::shared_ptr<Piece> shared_ptr(content_[new_coordinates.y][new_coordinates.x]);
                 content_[new_coordinates.y][new_coordinates.x] = nullptr;
             }
 

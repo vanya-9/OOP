@@ -28,7 +28,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         piece.h piece.cpp
         graphicboard.h graphicboard.cpp
         pawn.h pawn.cpp
-        piecefactory.h piecefactory.cpp
+        piecefactory.h
         Images.qrc
         boardcontroller.h boardcontroller.cpp
         rook.h rook.cpp

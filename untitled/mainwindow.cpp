@@ -6,7 +6,7 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   Board* board = new Board();
-  board->SetDefault();
+
 
   GraphicBoard* graphic_board = new GraphicBoard();
   ui->setupUi(this);
