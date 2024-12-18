@@ -118,43 +118,107 @@ std::shared_ptr<Piece> Board::GetPiece(int x, int y){
     return content_[y][x];
 }
 
+bool Board::IsShortCastling(Coordinates new_coordinates){
+    if(castling == true && ((new_coordinates.y == 7 && new_coordinates.x == 6)
+    || (new_coordinates.y == 0 && new_coordinates.x == 6))){
+        return true;
+    }
+    return false;
+}
+
+bool Board::IsLongCastling(Coordinates new_coordinates){
+    if(castling == true && ((new_coordinates.y == 7 && new_coordinates.x == 2) ||
+    (new_coordinates.y == 0 && new_coordinates.x == 2))){
+        return true;
+    }
+    return false;
+}
+
+void Board::MakeShortCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates){
+    std::shared_ptr<Piece> rook;
+    Coordinates king_new_coords;
+    Coordinates rook_new_coords;
+
+    king_new_coords = {new_coordinates.y, new_coordinates.x};
+    rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
+    rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
+    content_[king_new_coords.y][king_new_coords.x] = piece;
+    content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
+    piece->SetCoordinates(king_new_coords);
+    content_[rook_new_coords.y][rook_new_coords.x] = rook;
+    content_[new_coordinates.y][new_coordinates.x + 1] = nullptr;
+    rook->SetCoordinates(rook_new_coords);
+    turn_to_walk++;
+    castling = false;
+    piece->first_move = false;
+
+}
+
+void Board::MakeLongCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates){
+    std::shared_ptr<Piece> rook;
+    Coordinates king_new_coords;
+    Coordinates rook_new_coords;
+
+    king_new_coords = {new_coordinates.y, new_coordinates.x};
+    rook = GetPiece(new_coordinates.x - 2, new_coordinates.y);
+    rook_new_coords = {new_coordinates.y, new_coordinates.x + 1};
+    content_[king_new_coords.y][king_new_coords.x] = piece;
+    content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
+    piece->SetCoordinates(king_new_coords);
+    content_[rook_new_coords.y][rook_new_coords.x] = rook;
+    content_[new_coordinates.y][new_coordinates.x - 2] = nullptr;
+    rook->SetCoordinates(rook_new_coords);
+
+    turn_to_walk++;
+    castling = false;
+    piece->first_move = false;
+}
+
 void Board::SetPiece(std::shared_ptr<Piece> piece, Coordinates new_coordinates) {
     if (new_coordinates.y < 0 || new_coordinates.y >= board_size ||
         new_coordinates.x < 0 || new_coordinates.x >= board_size) {
         return;
     }
-
-    if(rokirovka == true && (new_coordinates.y == 7 || new_coordinates.y == 0) && (new_coordinates.x == 6 || new_coordinates.x == 2)){
-        std::shared_ptr<Piece> rook;
-        Coordinates king_new_coords;
-        Coordinates rook_new_coords ;
-        if(new_coordinates.x == 6){
-            king_new_coords = {new_coordinates.y, new_coordinates.x};
-            rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
-            rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
-            content_[king_new_coords.y][king_new_coords.x] = piece;
-            content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
-            piece->SetCoordinates(king_new_coords);
-            content_[rook_new_coords.y][rook_new_coords.x] = rook;
-            content_[new_coordinates.y][new_coordinates.x + 1] = nullptr;
-            rook->SetCoordinates(rook_new_coords);
-        }
-        else{
-            king_new_coords = {new_coordinates.y, new_coordinates.x};
-            rook = GetPiece(new_coordinates.x - 2, new_coordinates.y);
-            rook_new_coords = {new_coordinates.y, new_coordinates.x + 1};
-            content_[king_new_coords.y][king_new_coords.x] = piece;
-            content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
-            piece->SetCoordinates(king_new_coords);
-            content_[rook_new_coords.y][rook_new_coords.x] = rook;
-            content_[new_coordinates.y][new_coordinates.x - 2] = nullptr;
-            rook->SetCoordinates(rook_new_coords);
-        }
-        turn_to_walk++;
-        rokirovka = false;
-        piece->first_move = false;
+    if(IsShortCastling(new_coordinates)){
+        MakeShortCastling(piece, new_coordinates);
         return;
     }
+
+    if(IsLongCastling(new_coordinates)){
+        MakeLongCastling(piece, new_coordinates);
+        return;
+    }
+    // if(castling == true && (new_coordinates.y == 7 || new_coordinates.y == 0) && (new_coordinates.x == 6 || new_coordinates.x == 2)){
+    //     std::shared_ptr<Piece> rook;
+    //     Coordinates king_new_coords;
+    //     Coordinates rook_new_coords;
+    //     if(new_coordinates.x == 6){
+    //         king_new_coords = {new_coordinates.y, new_coordinates.x};
+    //         rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
+    //         rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
+    //         content_[king_new_coords.y][king_new_coords.x] = piece;
+    //         content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
+    //         piece->SetCoordinates(king_new_coords);
+    //         content_[rook_new_coords.y][rook_new_coords.x] = rook;
+    //         content_[new_coordinates.y][new_coordinates.x + 1] = nullptr;
+    //         rook->SetCoordinates(rook_new_coords);
+    //     }
+    //     else{
+    //         king_new_coords = {new_coordinates.y, new_coordinates.x};
+    //         rook = GetPiece(new_coordinates.x - 2, new_coordinates.y);
+    //         rook_new_coords = {new_coordinates.y, new_coordinates.x + 1};
+    //         content_[king_new_coords.y][king_new_coords.x] = piece;
+    //         content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
+    //         piece->SetCoordinates(king_new_coords);
+    //         content_[rook_new_coords.y][rook_new_coords.x] = rook;
+    //         content_[new_coordinates.y][new_coordinates.x - 2] = nullptr;
+    //         rook->SetCoordinates(rook_new_coords);
+    //     }
+    //     turn_to_walk++;
+    //     castling = false;
+    //     piece->first_move = false;
+    //     return;
+    // }
     auto possible_moves = piece->validator(this);
     for (const auto& coordinates : possible_moves) {
         if (coordinates.y == new_coordinates.y && coordinates.x == new_coordinates.x) {

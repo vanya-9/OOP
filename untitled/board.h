@@ -32,6 +32,12 @@ public:
     void SetQueen();
     void SetKing();
 
+    bool IsShortCastling(Coordinates new_coordinates);
+    bool IsLongCastling(Coordinates new_coordinates);
+
+    void MakeShortCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates);
+    void MakeLongCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates);
+
 signals:
     void ChooseFigure( std::shared_ptr<Piece> Pawn);
     void UpdateFigure();

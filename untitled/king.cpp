@@ -104,7 +104,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         !IsAttack(shared_from_this(), this->GetCoordinates(), forward_dawn_right, board)) {
         possible_moves.push_back(forward_dawn_right);
     }
-    rokirovka = false; //при других вызовах валидатора тут может обновиться значение рокировки,
+    castling = false; //при других вызовах валидатора тут может обновиться значение рокировки,
     //однако если мы не срокируемся, оно всегда будет трушным, что может привести к  mistakes
     //например в валидатор не добавим возможность, а она будет(в случае ошибок),
     //поэтому надо обновлять на false
@@ -120,7 +120,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         board->GetPiece(short_rokirovka_coordinates.x + 1, short_rokirovka_coordinates.y) != nullptr &&
         board->GetPiece(short_rokirovka_coordinates.x + 1, short_rokirovka_coordinates.y)->GetName() == "Rook" &&
         board->GetPiece(short_rokirovka_coordinates.x + 1, short_rokirovka_coordinates.y)->GetColor() == friendly_color){
-        rokirovka = true;
+        castling = true;
 
 
 
@@ -140,7 +140,7 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
         board->GetPiece(long_rokirovka_coordinates.x - 2, long_rokirovka_coordinates.y) != nullptr &&
         board->GetPiece(long_rokirovka_coordinates.x - 2, long_rokirovka_coordinates.y)->GetName() == "Rook" &&
         board->GetPiece(long_rokirovka_coordinates.x - 2, long_rokirovka_coordinates.y)->GetColor() == friendly_color){
-        rokirovka = true;
+        castling = true;
         Coordinates king_new_coords = { long_rokirovka_coordinates.y, long_rokirovka_coordinates.x};
         possible_moves.push_back(king_new_coords);
     }

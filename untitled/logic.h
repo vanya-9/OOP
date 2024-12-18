@@ -4,7 +4,7 @@
 const int board_size = 8;
 extern int turn_to_walk;
 const int cell_size = 64;
-extern bool rokirovka;
+extern bool castling;
 
 enum Color { WHITE, BLACK };
 
