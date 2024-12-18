@@ -1,6 +1,22 @@
 #include "king.h"
 #include "board.h"
 #include <QDebug>
+
+std::vector<Coordinates> King::getKingRawMoves() {
+    auto moves = std::vector<Coordinates>();
+    Coordinates coordinates_king;
+
+    for(int dx = -1; dx <= 1; dx++){
+        for(int dy = -1; dy <= 1; dy++){
+            if (dx == 0 && dy == 0) continue;
+            coordinates_king = {GetCoordinates().y + dy, GetCoordinates().x + dx};
+            moves.push_back(coordinates_king);
+
+        }
+    }
+    return moves;
+}
+
 King::King(Color color, Coordinates coordinates)
     : Piece(color, coordinates, "King") {
     is_king = true;
@@ -175,8 +191,8 @@ bool King::IsAttack(std::shared_ptr<Piece> piece, Coordinates piece_coordinates,
     auto tmp_piece = board->GetPiece(coordinates_to.x, coordinates_to.y);
     //Coordinates tmp_coordinates = board->GetPiece(coordinates_to.x, coordinates_to.y)->GetCoordinates();
     board->ContentTmpChange(coordinates_to, true, piece);// переставил коня
-    if(piece->GetName() != "King" && piece_coordinates.x != coordinates_to.x &&
-        piece_coordinates.y != coordinates_to.y){
+/*    if(piece->GetName() != "King" && piece_coordinates.x != coordinates_to.x &&
+        piece_coordinates.y != coordinates_to.y)*/{
         board->ContentTmpChange(piece_coordinates, false); // удаляю коня с текущих
     }
     for(int x = 0; x < board_size; x++){

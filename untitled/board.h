@@ -25,6 +25,12 @@ public:
     bool CellIsAttack(Board* board, Coordinates piece_coordinates, Color enemy_color);
     void FiltrMovies(std::vector<Coordinates> possible_movies,
                      std::vector<Coordinates>& filtr_movies,  std::shared_ptr<Piece> piece, Color enemy_color);
+    void SetPawns();
+    void SetRook();
+    void SetKnight();
+    void SetBishop();
+    void SetQueen();
+    void SetKing();
 
 signals:
     void ChooseFigure( std::shared_ptr<Piece> Pawn);

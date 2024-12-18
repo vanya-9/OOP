@@ -37,20 +37,16 @@ Board::Board() {
     SetDefault();
 }
 
-void Board::SetDefault() {
-    factory_.Register(PAWN, CreatePawn);
-    factory_.Register(ROOK, CreateRook);
-    factory_.Register(KNIGHT, CreateKnight);
-    factory_.Register(BISHOP, CreateBishop);
-    factory_.Register(QUEEN, CreateQueen);
-    factory_.Register(KING, CreateKing);
-
+void Board::SetPawns(){
     for (int i = 0; i < board_size; ++i) {
         Coordinates coords_w = {1, i};
         content_[1][i] = factory_.CreateObject(PAWN, WHITE, coords_w);
         Coordinates coords_b = {6, i};
         content_[6][i] = factory_.CreateObject(PAWN, BLACK, coords_b);
     }
+}
+
+void Board::SetRook(){
     Coordinates coords_w_rook = {0, 0};
     content_[0][0] = factory_.CreateObject(ROOK, WHITE, coords_w_rook);
     coords_w_rook = {0, 7};
@@ -60,7 +56,9 @@ void Board::SetDefault() {
     content_[7][0] = factory_.CreateObject(ROOK, BLACK, coords_b_rook);
     coords_b_rook = {7, 7};
     content_[7][7] = factory_.CreateObject(ROOK, BLACK, coords_b_rook);
+}
 
+void Board::SetKnight(){
     Coordinates coords_w_knight = {0, 1};
     content_[0][1] = factory_.CreateObject(KNIGHT, WHITE, coords_w_knight);
     coords_w_knight = {0, 6};
@@ -70,7 +68,9 @@ void Board::SetDefault() {
     content_[7][1] = factory_.CreateObject(KNIGHT, BLACK, coords_b_knight);
     coords_b_knight = {7, 6};
     content_[7][6] = factory_.CreateObject(KNIGHT, BLACK, coords_b_knight);
+}
 
+void Board::SetBishop(){
     Coordinates coords_w_bishop = {0, 2};
     content_[0][2] = factory_.CreateObject(BISHOP, WHITE, coords_w_bishop);
     coords_w_bishop = {0, 5};
@@ -79,21 +79,38 @@ void Board::SetDefault() {
     content_[7][2] = factory_.CreateObject(BISHOP, BLACK, coords_b_bishop);
     coords_b_bishop = {7, 5};
     content_[7][5] = factory_.CreateObject(BISHOP, BLACK, coords_b_bishop);
+}
 
-    Coordinates coords_w_queen= {0, 3};
-    content_[0][3] = factory_.CreateObject(QUEEN, WHITE, coords_w_queen);
-
-    Coordinates coords_b_queen = {7, 3};
-    content_[7][3] = factory_.CreateObject(QUEEN, BLACK, coords_b_queen);
-
+void Board::SetKing(){
     Coordinates coords_w_king = {0,4};
     content_[0][4] = factory_.CreateObject(KING, WHITE, coords_w_king);
 
     Coordinates coords_b_king = {7,4};
     content_[7][4] = factory_.CreateObject(KING, BLACK, coords_b_king);
+}
 
+void Board::SetQueen(){
+    Coordinates coords_w_queen= {0, 3};
+    content_[0][3] = factory_.CreateObject(QUEEN, WHITE, coords_w_queen);
 
+    Coordinates coords_b_queen = {7, 3};
+    content_[7][3] = factory_.CreateObject(QUEEN, BLACK, coords_b_queen);
+}
 
+void Board::SetDefault() {
+    factory_.Register(PAWN, CreatePawn);
+    factory_.Register(ROOK, CreateRook);
+    factory_.Register(KNIGHT, CreateKnight);
+    factory_.Register(BISHOP, CreateBishop);
+    factory_.Register(QUEEN, CreateQueen);
+    factory_.Register(KING, CreateKing);
+
+    SetPawns();
+    SetRook();
+    SetKnight();
+    SetBishop();
+    SetQueen();
+    SetKing();
 }
 
 
