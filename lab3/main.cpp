@@ -11,7 +11,7 @@ class IObserver {
 };
 
 template <typename T>
-class Subject{
+class Subject {
  public:
   Subject();
   ~Subject();
@@ -87,7 +87,6 @@ class LoggingObserver : public IObserver<T> {
 
   void onEvent(const T& event_data) override {
     file_ << "LoggingObserver data --> " << event_data << std::endl;
-    
   }
 };
 
@@ -103,32 +102,32 @@ std::ostream& operator<<(std::ostream& os, const CustomEvent& event) {
   return os;
 }
 
-int main(){
-    std::ofstream out_file("out_file.txt");
-	if (!out_file.is_open()) {
-		return EIO;
-	}
+int main() {
+  std::ofstream out_file("out_file.txt");
+  if (!out_file.is_open()) {
+    return EIO;
+  }
 
-    Subject<int> subject_int_type;
-    auto console_int_observer = std::make_shared<ConsoleObserver<int>>();
-	auto log_int_observer = std::make_shared<LoggingObserver<int>>(out_file);
+  Subject<int> subject_int_type;
+  auto console_int_observer = std::make_shared<ConsoleObserver<int>>();
+  auto log_int_observer = std::make_shared<LoggingObserver<int>>(out_file);
 
-    subject_int_type.Attach(console_int_observer);
-    subject_int_type.Attach(log_int_observer);
-    subject_int_type.Notify(25);
+  subject_int_type.Attach(console_int_observer);
+  subject_int_type.Attach(log_int_observer);
+  subject_int_type.Notify(25);
 
-    Subject<std::string> subject_string_type;
-    auto console_sting_observer = std::make_shared<ConsoleObserver<std::string>>();
-    auto log_string_observer = std::make_shared<LoggingObserver<std::string>>(out_file);
-    subject_string_type.Attach(console_sting_observer);
-    subject_string_type.Attach(log_string_observer);
-    subject_string_type.Notify("Pricolvkontakte");
+  Subject<std::string> subject_string_type;
+  auto console_sting_observer = std::make_shared<ConsoleObserver<std::string>>();
+  auto log_string_observer = std::make_shared<LoggingObserver<std::string>>(out_file);
+  subject_string_type.Attach(console_sting_observer);
+  subject_string_type.Attach(log_string_observer);
+  subject_string_type.Notify("Pricolvkontakte");
 
-    Subject<CustomEvent> subject_custom_type;
-    auto console_custom_observer = std::make_shared<ConsoleObserver<CustomEvent>>();
-	auto log_custom_observer = std::make_shared<LoggingObserver<CustomEvent>>(out_file);
-    subject_custom_type.Attach(console_custom_observer);
-    subject_custom_type.Attach(log_custom_observer);
-    subject_custom_type.Notify({1412, 4214, "boris"});
-    return 0;
+  Subject<CustomEvent> subject_custom_type;
+  auto console_custom_observer = std::make_shared<ConsoleObserver<CustomEvent>>();
+  auto log_custom_observer = std::make_shared<LoggingObserver<CustomEvent>>(out_file);
+  subject_custom_type.Attach(console_custom_observer);
+  subject_custom_type.Attach(log_custom_observer);
+  subject_custom_type.Notify({1412, 4214, "boris"});
+  return 0;
 }
