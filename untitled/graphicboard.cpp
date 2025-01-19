@@ -35,9 +35,17 @@ void GraphicBoard::drawBoard()
     drawPieces();
 }
 
+QString GraphicBoard::GetPathPiece(std::shared_ptr<Piece> piece){
+    QString color_p = piece->GetColor() == WHITE ? "w" : "b";
+    QString name_piece = QString::fromStdString(piece->GetName());
+    QString path = ":/Image/" + color_p + "_" + name_piece;
 
-void GraphicBoard::drawTypePiece(std::map<std::pair<int, int>, QGraphicsPixmapItem*> &piece_items, QString path, int row, int col)
+    return path;
+}
+
+void GraphicBoard::drawTypePiece(std::map<std::pair<int, int>, QGraphicsPixmapItem*> &piece_items, std::shared_ptr<Piece> piece, int row, int col)
 {
+    auto path = GetPathPiece(piece);
     auto cell = std::make_pair(row, col);
     if (piece_items.find(cell) == piece_items.end()) {
         QPixmap pixmap_pawn(path);
@@ -69,43 +77,8 @@ void GraphicBoard::drawPieces(bool update) {
                     piece_items_.erase(cell);
                 }
 
-                if (piece->GetName() == "Pawn" && piece->GetColor() == WHITE) {
-                    drawTypePiece(piece_items_,":/Image/w_pawn.svg", row, col);
-                }
-
-                if (piece->GetName() == "Pawn" && piece->GetColor() == BLACK) {
-                    drawTypePiece(piece_items_,":/Image/b_pawn.svg", row, col);
-                }
-
-                if (piece->GetName() == "Rook" && piece->GetColor() == WHITE) {
-                    drawTypePiece(piece_items_,":/Image/w_rook.svg", row, col);
-                }
-                if (piece->GetName() == "Rook" && piece->GetColor() == BLACK) {
-                    drawTypePiece(piece_items_,":/Image/b_rook.svg", row, col);
-                }
-                if (piece->GetName() == "Knight" && piece->GetColor() == WHITE) {
-                    drawTypePiece(piece_items_,":/Image/w_knight.svg", row, col);
-                }
-                if (piece->GetName() == "Knight" && piece->GetColor() == BLACK) {
-                    drawTypePiece(piece_items_,":/Image/b_knight.svg", row, col);
-                }
-                if (piece->GetName() == "Bishop" && piece->GetColor() == WHITE) {
-                    drawTypePiece(piece_items_,":/Image/w_bishop.svg", row, col);
-                }
-                if (piece->GetName() == "Bishop" && piece->GetColor() == BLACK) {
-                    drawTypePiece(piece_items_,":/Image/b_bishop.svg", row, col);
-                }
-                if (piece->GetName() == "Queen" && piece->GetColor() == WHITE) {
-                    drawTypePiece(piece_items_,":/Image/w_queen.svg", row, col);
-                }
-                if (piece->GetName() == "Queen" && piece->GetColor() == BLACK) {
-                    drawTypePiece(piece_items_,":/Image/b_queen.svg", row, col);
-                }
-                if (piece->GetName() == "King" && piece->GetColor() == WHITE) {
-                    drawTypePiece(piece_items_,":/Image/w_king.svg", row, col);
-                }
-                if (piece->GetName() == "King" && piece->GetColor() == BLACK) {
-                    drawTypePiece(piece_items_,":/Image/b_king.svg", row, col);
+                if (piece != nullptr) {
+                    drawTypePiece(piece_items_, piece, row, col);
                 }
 
             } else {
@@ -133,14 +106,14 @@ void GraphicBoard::SetBoard(Board& board)
 void GraphicBoard::highlightPossibleMoves(const std::vector<Coordinates>& moves)
 {
     for (const auto& move : moves) {
-        if(move.y <= 7){
             QGraphicsRectItem* highlight = scene_->addRect(
                 move.x * cell_size, move.y * cell_size, cell_size, cell_size,
                 QPen(Qt::green), QBrush(QColor(0, 255, 0, 100))
                 );
             highlight->setZValue(2);
             highlighted_cells_.push_back(highlight);
-        }}
+
+    }
 }
 
 void GraphicBoard::clearHighlights()

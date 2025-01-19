@@ -10,6 +10,7 @@ public:
     virtual std::vector<Coordinates> validator(Board* board, bool filtr = true) override;
     bool IsAttack(std::shared_ptr<Piece> piece, Coordinates piece_coordinates, Coordinates coordinates_to, Board* board);
     std::vector<Coordinates> getKingRawMoves();
+    void CastlingSwap(Board* board, std::vector<Coordinates>& possible_moves);
 };
 
 #endif // KING_H

@@ -3,80 +3,48 @@
 
 Rook::Rook(Color color, Coordinates coordinates) : Piece(color, coordinates, "Rook") {};
 
-std::vector<Coordinates> Rook::validator(Board* board, bool filtr){
+std::vector<Coordinates> Rook::validator(Board* board, bool filtr) {
     std::vector<Coordinates> possible_moves;
-    Color enemy_color = GetColor() == WHITE ? BLACK : WHITE;
-    Color not_enemy_color = GetColor() == WHITE ? WHITE : BLACK;
+    Color enemy_color = (GetColor() == WHITE) ? BLACK : WHITE;
+    Coordinates current_pos = GetCoordinates();
 
-    {
-        for(int y = GetCoordinates().y + 1; y <= 7; y++){
-            if(board->GetPiece(GetCoordinates().x, y) == nullptr){
-            Coordinates forward = {y,GetCoordinates().x};
-            possible_moves.push_back(forward);
-            }
-            else if((board->GetPiece(GetCoordinates().x, y)) != nullptr &&
-                    (board->GetPiece(GetCoordinates().x, y)->GetColor() == enemy_color ||
-                    board->GetPiece(GetCoordinates().x, y)->GetColor() == not_enemy_color)){
-                if(board->GetPiece(GetCoordinates().x, y)->GetColor() == enemy_color){
-                Coordinates forward = {y,GetCoordinates().x};
-                possible_moves.push_back(forward);
-                }
-                break;
-            }
-        }
-        for(int y = GetCoordinates().y - 1; y >= 0; y--){
-            if(board->GetPiece(GetCoordinates().x, y) == nullptr){
-                Coordinates forward = {y,GetCoordinates().x};
-                possible_moves.push_back(forward);
-            }
-            else if((board->GetPiece(GetCoordinates().x, y)) != nullptr &&
-                     (board->GetPiece(GetCoordinates().x, y)->GetColor() == enemy_color ||
-                      board->GetPiece(GetCoordinates().x, y)->GetColor() == not_enemy_color)){
-                if(board->GetPiece(GetCoordinates().x, y)->GetColor() == enemy_color){
-                    Coordinates forward = {y,GetCoordinates().x};
-                    possible_moves.push_back(forward);
-                }
-                break;
-            }
-        }
+    std::vector<std::pair<int, int>> directions = {
+        {-1, 0},
+        {+1, 0},
+        {0, -1},
+        {0, +1}
+    };
 
-        for(int x = GetCoordinates().x + 1; x <= 7; x++){
-            if(board->GetPiece(x, GetCoordinates().y) == nullptr){
-                Coordinates forward = {GetCoordinates().y,x};
-                possible_moves.push_back(forward);
-            }
-            else if((board->GetPiece(x, GetCoordinates().y)) != nullptr &&
-                     (board->GetPiece(x, GetCoordinates().y)->GetColor() == enemy_color ||
-                      board->GetPiece(x, GetCoordinates().y)->GetColor() == not_enemy_color)){
-                if(board->GetPiece(x, GetCoordinates().y)->GetColor() == enemy_color){
-                    Coordinates forward = {GetCoordinates().y,x};
-                    possible_moves.push_back(forward);
-                }
-                break;
-            }
-        }
+    for (const auto& dir : directions) {
+        int dx = dir.first;
+        int dy = dir.second;
 
-        for(int x = GetCoordinates().x - 1; x >= 0; x--){
-            if(board->GetPiece(x, GetCoordinates().y) == nullptr){
-                Coordinates forward = {GetCoordinates().y,x};
-                possible_moves.push_back(forward);
-            }
-            else if((board->GetPiece(x, GetCoordinates().y)) != nullptr &&
-                     (board->GetPiece(x, GetCoordinates().y)->GetColor() == enemy_color ||
-                      board->GetPiece(x, GetCoordinates().y)->GetColor() == not_enemy_color)){
-                if(board->GetPiece(x, GetCoordinates().y)->GetColor() == enemy_color){
-                    Coordinates forward = {GetCoordinates().y,x};
-                    possible_moves.push_back(forward);
+        for (int k = 1; k <= 7; ++k) {
+            int new_x = current_pos.x + dx * k;
+            int new_y = current_pos.y + dy * k;
+
+            if (new_x >= 0 && new_x < 8 && new_y >= 0 && new_y < 8) {
+                std::shared_ptr<Piece> piece = board->GetPiece(new_x, new_y);
+
+                if (piece == nullptr) {
+                    possible_moves.push_back({new_y, new_x});
+                } else {
+                    if (piece->GetColor() == enemy_color) {
+                        possible_moves.push_back({new_y, new_x});
+                    }
+                    break;
                 }
+            } else {
                 break;
             }
         }
     }
-    std::vector<Coordinates> filtr_moves;
-    if(filtr){
-        board->FiltrMovies(possible_moves,filtr_moves, shared_from_this(), enemy_color);
+
+    if (filtr) {
+        std::vector<Coordinates> filtr_moves;
+        board->FiltrMoves(possible_moves, filtr_moves, shared_from_this(), enemy_color);
         return filtr_moves;
-
     }
+
     return possible_moves;
 }

@@ -3,72 +3,42 @@
 
 Knight::Knight(Color color, Coordinates coordinates) : Piece(color, coordinates, "Knight") {};
 
-std::vector<Coordinates> Knight::validator(Board* board, bool filtr){
+std::vector<Coordinates> Knight::validator(Board* board, bool filtr) {
     std::vector<Coordinates> possible_moves;
-    Color enemy_color = GetColor() == WHITE ? BLACK : WHITE;
-    Coordinates down_right_forward = {GetCoordinates().y + 2, GetCoordinates().x + 1};
-        if(down_right_forward.x <= 7 &&down_right_forward.y <= 7 &&
-        ((board->GetPiece(down_right_forward.x,down_right_forward.y) == nullptr) ||(
-        board->GetPiece(down_right_forward.x,down_right_forward.y) != nullptr &&
-        board->GetPiece(down_right_forward.x,down_right_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(down_right_forward);
-    }
-    Coordinates down_left_forward = {GetCoordinates().y + 2, GetCoordinates().x - 1};
-    if(down_left_forward.x >= 0 &&down_left_forward.y <= 7 &&
-        ((board->GetPiece(down_left_forward.x,down_left_forward.y) == nullptr) ||(
-             board->GetPiece(down_left_forward.x,down_left_forward.y) != nullptr &&
-             board->GetPiece(down_left_forward.x,down_left_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(down_left_forward);
-    }
-    Coordinates up_right_forward = {GetCoordinates().y - 2, GetCoordinates().x + 1};
-    if(up_right_forward.x <=7 && up_right_forward.y >= 0 &&
-        ((board->GetPiece(up_right_forward.x,up_right_forward.y) == nullptr) ||(
-             board->GetPiece(up_right_forward.x,up_right_forward.y) != nullptr &&
-             board->GetPiece(up_right_forward.x,up_right_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(up_right_forward);
+    Color enemy_color = (GetColor() == WHITE) ? BLACK : WHITE;
+    Coordinates current_pos = GetCoordinates();
+
+    std::vector<std::pair<int, int>> knight_moves = {
+        {+2, +1},
+        {+2, -1},
+        {-2, +1},
+        {-2, -1},
+        {+1, +2},
+        {+1, -2},
+        {-1, +2},
+        {-1, -2}
+    };
+
+    for (const auto& move : knight_moves) {
+        int new_x = current_pos.x + move.second;
+        int new_y = current_pos.y + move.first;
+        Coordinates new_pos = {new_y, new_x};
+
+        if (new_x >= 0 && new_x < 8 && new_y >= 0 && new_y < 8) {
+            std::shared_ptr<Piece> piece = board->GetPiece(new_x, new_y);
+
+            if (piece == nullptr || piece->GetColor() == enemy_color) {
+                possible_moves.push_back(new_pos);
+            }
+        }
     }
 
-    Coordinates up_left_forward = {GetCoordinates().y - 2, GetCoordinates().x - 1};
-    if(up_left_forward.x >= 0 && up_left_forward.y >= 0 &&
-        ((board->GetPiece(up_left_forward.x,up_left_forward.y) == nullptr) ||(
-             board->GetPiece(up_left_forward.x,up_left_forward.y) != nullptr &&
-             board->GetPiece(up_left_forward.x,up_left_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(up_left_forward);
-    }
-    Coordinates left_up_forward = {GetCoordinates().y - 1, GetCoordinates().x - 2};
-    if(left_up_forward.x >= 0 && left_up_forward.y >= 0 &&
-        ((board->GetPiece(left_up_forward.x,left_up_forward.y) == nullptr) ||(
-             board->GetPiece(left_up_forward.x,left_up_forward.y) != nullptr &&
-             board->GetPiece(left_up_forward.x,left_up_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(left_up_forward);
-    }
-    Coordinates left_down_forward = {GetCoordinates().y + 1, GetCoordinates().x - 2};
-    if(left_down_forward.x >= 0 &&left_down_forward.y <= 7 &&
-        ((board->GetPiece(left_down_forward.x,left_down_forward.y) == nullptr) ||(
-             board->GetPiece(left_down_forward.x,left_down_forward.y) != nullptr &&
-             board->GetPiece(left_down_forward.x,left_down_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(left_down_forward);
-    }
-    Coordinates right_up_forward = {GetCoordinates().y - 1, GetCoordinates().x + 2};
-    if(right_up_forward.x <= 7 &&right_up_forward.y >= 0 &&
-        ((board->GetPiece(right_up_forward.x,right_up_forward.y) == nullptr) ||(
-             board->GetPiece(right_up_forward.x,right_up_forward.y) != nullptr &&
-             board->GetPiece(right_up_forward.x,right_up_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(right_up_forward);
-    }
-    Coordinates right_down_forward = {GetCoordinates().y + 1, GetCoordinates().x + 2};
-    if(right_down_forward.x <= 7 &&right_down_forward.y <= 7 &&
-        ((board->GetPiece(right_down_forward.x,right_down_forward.y) == nullptr) ||(
-             board->GetPiece(right_down_forward.x,right_down_forward.y) != nullptr &&
-             board->GetPiece(right_down_forward.x,right_down_forward.y)->GetColor() == enemy_color))){
-        possible_moves.push_back(right_down_forward);
-    }
 
-    std::vector<Coordinates> filtr_moves;
-    if(filtr){
-        board->FiltrMovies(possible_moves,filtr_moves, shared_from_this(), enemy_color);
+    if (filtr) {
+        std::vector<Coordinates> filtr_moves;
+        board->FiltrMoves(possible_moves, filtr_moves, shared_from_this(), enemy_color);
         return filtr_moves;
-
     }
+
     return possible_moves;
 }

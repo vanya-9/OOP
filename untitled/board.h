@@ -15,16 +15,18 @@ class Board : public QObject
 public:
     Board();
 
+    void OnPawnTransform(std::shared_ptr<Piece> pawn, Coordinates new_coordinates);
+
     void ContentTmpChange(Coordinates coordinates, bool state,  std::shared_ptr<Piece> piece = nullptr);
 
     void SetDefault();
 
-     std::shared_ptr<Piece> GetPiece(int y, int x);
+    std::shared_ptr<Piece> GetPiece(int y, int x);
 
     void SetPiece( std::shared_ptr<Piece> piece, Coordinates new_coordinates);
     bool CellIsAttack(Board* board, Coordinates piece_coordinates, Color enemy_color);
-    void FiltrMovies(std::vector<Coordinates> possible_movies,
-                     std::vector<Coordinates>& filtr_movies,  std::shared_ptr<Piece> piece, Color enemy_color);
+    void FiltrMoves(std::vector<Coordinates> possible_moves,
+                     std::vector<Coordinates>& filtr_moves,  std::shared_ptr<Piece> piece, Color enemy_color);
     void SetPawns();
     void SetRook();
     void SetKnight();
@@ -37,6 +39,9 @@ public:
 
     void MakeShortCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates);
     void MakeLongCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates);
+
+    std::shared_ptr<King> GetEnemyKing(std::shared_ptr<Piece> piece, Board* board);
+    std::shared_ptr<King> GetFriendKing(std::shared_ptr<Piece> piece, Board* board);
 
 signals:
     void ChooseFigure( std::shared_ptr<Piece> Pawn);

@@ -15,9 +15,11 @@ public:
     void drawBoard();
     void drawPieces(bool update = false);
     void highlightPossibleMoves(const std::vector<Coordinates>& moves);
-    void drawTypePiece(std::map<std::pair<int, int>, QGraphicsPixmapItem*> &piece_items, QString path, int row, int col);
+    void drawTypePiece(std::map<std::pair<int, int>, QGraphicsPixmapItem*> &piece_items, std::shared_ptr<Piece> piece, int row, int col);
 
     void clearHighlights();
+
+    QString GetPathPiece(std::shared_ptr<Piece> piece);
 
 signals:
     void cellClicked(int x, int y);

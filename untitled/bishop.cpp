@@ -4,85 +4,49 @@ Bishop::Bishop(Color color, Coordinates coordinates)
     : Piece(color, coordinates, "Bishop") {}
 
 std::vector<Coordinates> Bishop::validator(Board* board, bool filtr) {
-  std::vector<Coordinates> possible_moves;
-  Coordinates forward = {GetCoordinates().y, GetCoordinates().x};
-  Coordinates forward_push;
-  Color enemy_color = GetColor() == WHITE ? BLACK : WHITE;
-  for (int k = 1; k <= 7; k++) {
-    if (forward.x - k >= 0 && forward.y + k <= 7) {
-      if (board->GetPiece(forward.x - k, forward.y + k) == nullptr) {
-        forward_push = {forward.y + k, forward.x - k};
-        possible_moves.push_back(forward_push);
-      } else if (board->GetPiece(forward.x - k, forward.y + k) != nullptr
-                 /*&&(board->GetPiece(forward.x - k, forward.y + k)->GetName() != "King"*/ ) {
-        if (board->GetPiece(forward.x - k, forward.y + k)->GetColor() ==
-            enemy_color) {
-          forward_push = {forward.y + k, forward.x - k};
-          possible_moves.push_back(forward_push);
-        }break;
-      }
+    std::vector<Coordinates> possible_moves;
+    Coordinates current_pos = GetCoordinates();
+    Color enemy_color = (GetColor() == WHITE) ? BLACK : WHITE;
 
+    std::vector<std::pair<int, int>> directions = {
+        {-1, +1},
+        {+1, -1},
+        {+1, +1},
+        {-1, -1}
+    };
+
+    for (const auto& dir : directions) {
+        int dx = dir.first;
+        int dy = dir.second;
+        int x = current_pos.x;
+        int y = current_pos.y;
+
+        for (int k = 1; k <= 7; ++k) {
+            int new_x = x + dx * k;
+            int new_y = y + dy * k;
+
+            if (new_x >= 0 && new_x < 8 && new_y >= 0 && new_y < 8) {
+                std::shared_ptr<Piece> piece = board->GetPiece(new_x, new_y);
+
+                if (piece == nullptr) {
+                    possible_moves.push_back({new_y, new_x});
+                } else {
+                    if (piece->GetColor() == enemy_color) {
+                        possible_moves.push_back({new_y, new_x});
+                    }
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
     }
-  }
 
-  for (int k = 1; k <= 7; k++) {
-      if (forward.x + k <= 7 && forward.y - k >= 0) {
-          if (board->GetPiece(forward.x + k, forward.y - k) == nullptr) {
-              forward_push = {forward.y - k, forward.x + k};
-              possible_moves.push_back(forward_push);
-          } else if (board->GetPiece(forward.x + k, forward.y - k) != nullptr /*&&
-                     board->GetPiece(forward.x + k, forward.y - k)->GetName() != "King"*/) {
-              if (board->GetPiece(forward.x + k, forward.y - k)->GetColor() ==
-                  enemy_color) {
-                  forward_push = {forward.y - k, forward.x + k};
-                  possible_moves.push_back(forward_push);
+    if (filtr) {
+        std::vector<Coordinates> filtr_moves;
+        board->FiltrMoves(possible_moves, filtr_moves, shared_from_this(), enemy_color);
+        return filtr_moves;
+    }
 
-              }break;
-          }
-
-      }
-  }
-
-  for (int k = 1; k <= 7; k++) {
-      if (forward.x + k <= 7 && forward.y + k <= 7) {
-          if (board->GetPiece(forward.x + k, forward.y + k) == nullptr) {
-              forward_push = {forward.y + k, forward.x + k};
-              possible_moves.push_back(forward_push);
-          } else if (board->GetPiece(forward.x + k, forward.y + k) != nullptr
-                     /*&& board->GetPiece(forward.x + k, forward.y + k)->GetName()!= "King"*/) {
-              if (board->GetPiece(forward.x + k, forward.y + k)->GetColor() ==
-                  enemy_color) {
-                  forward_push = {forward.y + k, forward.x + k};
-                  possible_moves.push_back(forward_push);
-              }break;
-          }
-
-      }
-  }
-  for (int k = 1; k <= 7; k++) {
-      if (forward.x - k >= 0 && forward.y - k >= 0) {
-          if (board->GetPiece(forward.x - k, forward.y - k) == nullptr) {
-              forward_push = {forward.y - k, forward.x - k};
-              possible_moves.push_back(forward_push);
-          } else if (board->GetPiece(forward.x - k, forward.y - k) != nullptr /*&&
-                     board->GetPiece(forward.x - k, forward.y - k)->GetName()!= "King"*/) {
-              if (board->GetPiece(forward.x - k, forward.y - k)->GetColor() ==
-                  enemy_color) {
-                  forward_push = {forward.y - k, forward.x - k};
-                  possible_moves.push_back(forward_push);
-              }break;
-          }
-
-      }
-  }
-  std::vector<Coordinates> filtr_moves;
-  if(filtr){
-      board->FiltrMovies(possible_moves,filtr_moves, shared_from_this(), enemy_color);
-      return filtr_moves;
-
-  }
-
-
-
-  return possible_moves;
+    return possible_moves;
 }

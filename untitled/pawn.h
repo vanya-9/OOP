@@ -17,7 +17,6 @@ public:
 
     bool GetUpdate();
 
-    std::vector<Coordinates> AllValidator(Board* board);
 
 
 

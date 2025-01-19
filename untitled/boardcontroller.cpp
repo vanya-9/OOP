@@ -9,32 +9,33 @@ BoardController::BoardController(Board* board,
 }
 
 void BoardController::handleCellClick(int x, int y) {
-    Color turncolor = turn_to_walk % 2 == 0  ? WHITE : BLACK;
-    std::shared_ptr<Piece> clickedPiece = board_->GetPiece(x, y);
-    if (x >= 0 && x <= 7 && y >= 0 && y <= 7 ) {
-        if (clickedPiece != nullptr && board_->GetPiece(x, y)->GetColor() == turncolor) {
-            if (selected_piece_ != nullptr &&
-                clickedPiece->GetColor() != selected_piece_->GetColor()) {
-                {
-                    movePieceTo(selected_piece_, {y, x});
-                    selected_piece_ = nullptr;
-                }
-            } else if (selected_piece_ == clickedPiece) {
-                graphic_board_->clearHighlights();
-                selected_piece_ = nullptr;
-            } else {
-                graphic_board_->clearHighlights();
-                {
-                    selected_piece_ = clickedPiece;
-                    highlightMoves(selected_piece_);
-                }
-            }
-        } else if (selected_piece_ != nullptr) {
-            movePieceTo(selected_piece_, {y, x});
-            selected_piece_ = nullptr;
-        }
+    if (x < 0 || x >= board_size || y < 0 || y >= board_size) {
+        return;
+    }
+
+    Color turncolor = (turn_to_walk % 2 == 0) ? WHITE : BLACK;
+    std::shared_ptr<Piece> clicked_piece = board_->GetPiece(x, y);
+
+    if (clicked_piece == selected_piece_) {
+        graphic_board_->clearHighlights();
+        selected_piece_ = nullptr;
+        return;
+    }
+
+    if (clicked_piece != nullptr && clicked_piece->GetColor() == turncolor) {
+        graphic_board_->clearHighlights();
+        selected_piece_ = clicked_piece;
+        highlightMoves(selected_piece_);
+        return;
+    }
+
+    if (selected_piece_ != nullptr) {
+        movePieceTo(selected_piece_, {y, x});
+        graphic_board_->clearHighlights();
+        selected_piece_ = nullptr;
     }
 }
+
 
 void BoardController::highlightMoves(std::shared_ptr<Piece> piece) {
     auto possible_moves = piece->validator(board_);

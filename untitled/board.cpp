@@ -25,9 +25,6 @@ std::shared_ptr<Piece> CreateKing(Color color, Coordinates coordinates) {
     return std::make_shared<King>(color, coordinates);
 }
 
-
-
-
 Board::Board() {
     for (int i = 0; i < board_size; ++i) {
         for (int j = 0; j < board_size; ++j) {
@@ -142,12 +139,14 @@ void Board::MakeShortCastling(std::shared_ptr<Piece> piece, Coordinates new_coor
     king_new_coords = {new_coordinates.y, new_coordinates.x};
     rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
     rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
+
     content_[king_new_coords.y][king_new_coords.x] = piece;
     content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
     piece->SetCoordinates(king_new_coords);
     content_[rook_new_coords.y][rook_new_coords.x] = rook;
     content_[new_coordinates.y][new_coordinates.x + 1] = nullptr;
     rook->SetCoordinates(rook_new_coords);
+
     turn_to_walk++;
     castling = false;
     piece->first_move = false;
@@ -162,6 +161,7 @@ void Board::MakeLongCastling(std::shared_ptr<Piece> piece, Coordinates new_coord
     king_new_coords = {new_coordinates.y, new_coordinates.x};
     rook = GetPiece(new_coordinates.x - 2, new_coordinates.y);
     rook_new_coords = {new_coordinates.y, new_coordinates.x + 1};
+
     content_[king_new_coords.y][king_new_coords.x] = piece;
     content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
     piece->SetCoordinates(king_new_coords);
@@ -188,42 +188,11 @@ void Board::SetPiece(std::shared_ptr<Piece> piece, Coordinates new_coordinates) 
         MakeLongCastling(piece, new_coordinates);
         return;
     }
-    // if(castling == true && (new_coordinates.y == 7 || new_coordinates.y == 0) && (new_coordinates.x == 6 || new_coordinates.x == 2)){
-    //     std::shared_ptr<Piece> rook;
-    //     Coordinates king_new_coords;
-    //     Coordinates rook_new_coords;
-    //     if(new_coordinates.x == 6){
-    //         king_new_coords = {new_coordinates.y, new_coordinates.x};
-    //         rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
-    //         rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
-    //         content_[king_new_coords.y][king_new_coords.x] = piece;
-    //         content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
-    //         piece->SetCoordinates(king_new_coords);
-    //         content_[rook_new_coords.y][rook_new_coords.x] = rook;
-    //         content_[new_coordinates.y][new_coordinates.x + 1] = nullptr;
-    //         rook->SetCoordinates(rook_new_coords);
-    //     }
-    //     else{
-    //         king_new_coords = {new_coordinates.y, new_coordinates.x};
-    //         rook = GetPiece(new_coordinates.x - 2, new_coordinates.y);
-    //         rook_new_coords = {new_coordinates.y, new_coordinates.x + 1};
-    //         content_[king_new_coords.y][king_new_coords.x] = piece;
-    //         content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
-    //         piece->SetCoordinates(king_new_coords);
-    //         content_[rook_new_coords.y][rook_new_coords.x] = rook;
-    //         content_[new_coordinates.y][new_coordinates.x - 2] = nullptr;
-    //         rook->SetCoordinates(rook_new_coords);
-    //     }
-    //     turn_to_walk++;
-    //     castling = false;
-    //     piece->first_move = false;
-    //     return;
-    // }
+
     auto possible_moves = piece->validator(this);
     for (const auto& coordinates : possible_moves) {
         if (coordinates.y == new_coordinates.y && coordinates.x == new_coordinates.x) {
             if (this->GetPiece(new_coordinates.y, new_coordinates.x) != nullptr) {
-                //std::shared_ptr<Piece> shared_ptr(content_[new_coordinates.y][new_coordinates.x]);
                 content_[new_coordinates.y][new_coordinates.x] = nullptr;
             }
 
@@ -232,18 +201,22 @@ void Board::SetPiece(std::shared_ptr<Piece> piece, Coordinates new_coordinates) 
             content_[new_coordinates.y][new_coordinates.x] = piece;
             piece->first_move = false;
             turn_to_walk++;
-            if ((piece->GetColor() == BLACK && new_coordinates.y == 0) ||
-                (piece->GetColor() == WHITE && new_coordinates.y == 7)) {
-
-                if (std::shared_ptr<Pawn> pawn = std::dynamic_pointer_cast<Pawn>(piece)) {
-                    pawn->SetUpdate();
-                    emit ChooseFigure(piece);
-
-                }
-            }
+            OnPawnTransform(piece, new_coordinates);
     }
 }
 }
+
+void Board ::OnPawnTransform(std::shared_ptr<Piece> piece, Coordinates new_coordinates){
+    if ((piece->GetColor() == BLACK && new_coordinates.y == 0) ||
+        (piece->GetColor() == WHITE && new_coordinates.y == 7)) {
+
+        if (std::shared_ptr<Pawn> pawn = std::dynamic_pointer_cast<Pawn>(piece)) {
+            pawn->SetUpdate();
+            emit ChooseFigure(piece);
+
+        }
+    }
+};
 
 
 void Board::onTransformationChosen(int chosen_figure, std::shared_ptr<Piece> pawn)
@@ -293,45 +266,66 @@ void Board::ContentTmpChange(Coordinates coordinates, bool state, std::shared_pt
     }
 
 }
- // ////////////////////////////////////////////////////////////////////////////////////
-void Board::FiltrMovies(std::vector<Coordinates> possible_movies,
-                        std::vector<Coordinates>& filtr_movies, std::shared_ptr<Piece> piece, Color enemy_color){
-    auto copy_board = this;
-    std::shared_ptr<King> our_king;
+
+// piece - фигура, для которой ищем врага
+std::shared_ptr<King> Board::GetEnemyKing(std::shared_ptr<Piece> piece, Board* board){
     std::shared_ptr<King> enemy_king;
+    Color friend_color = piece->GetColor() == WHITE ? WHITE : BLACK;
 
     for (int x = 0; x < board_size; x++) {
         for (int y = 0; y < board_size; y++) {
-            if (copy_board->GetPiece(x, y) != nullptr &&
-                copy_board->GetPiece(x, y)->GetName() == "King" &&
-                copy_board->GetPiece(x, y)->GetColor() != enemy_color) {
-                our_king = std::dynamic_pointer_cast<King>(copy_board->GetPiece(x, y));
-            }
-            if (copy_board->GetPiece(x, y) != nullptr &&
-                copy_board->GetPiece(x, y)->GetName() == "King" &&
-                copy_board->GetPiece(x, y)->GetColor() == enemy_color) {
-                enemy_king = std::dynamic_pointer_cast<King>(copy_board->GetPiece(x, y));
+            if (board->GetPiece(x, y) != nullptr &&
+                board->GetPiece(x, y)->GetName() == "King" &&
+                board->GetPiece(x, y)->GetColor() != friend_color) {
+                enemy_king = std::dynamic_pointer_cast<King>(board->GetPiece(x, y));
             }
         }
     }
+
+    return enemy_king;
+}
+
+//piece -  фигура, для которой ищем друга
+std::shared_ptr<King> Board::GetFriendKing(std::shared_ptr<Piece> piece, Board* board){
+    std::shared_ptr<King> friend_king;
+    Color enemy_color = piece->GetColor() == WHITE ? BLACK : WHITE;
+
+    for (int x = 0; x < board_size; x++) {
+        for (int y = 0; y < board_size; y++) {
+            if (board->GetPiece(x, y) != nullptr &&
+                board->GetPiece(x, y)->GetName() == "King" &&
+                board->GetPiece(x, y)->GetColor() != enemy_color) {
+                friend_king = std::dynamic_pointer_cast<King>(board->GetPiece(x, y));
+            }
+        }
+    }
+
+    return friend_king;
+}
+
+ // ////////////////////////////////////////////////////////////////////////////////////
+void Board::FiltrMoves(std::vector<Coordinates> possible_moves,
+                        std::vector<Coordinates>& filtr_moves, std::shared_ptr<Piece> piece, Color enemy_color){
+    auto copy_board = this;
+    std::shared_ptr<King> our_king = GetFriendKing(piece, copy_board);
+    std::shared_ptr<King> enemy_king = GetEnemyKing(piece, copy_board);
+
     auto piece_start_coordinates = piece->GetCoordinates();
     auto our_king_coordinates = our_king->GetCoordinates();
 
-    int number_movie = 0;
-    while(number_movie < possible_movies.size()){
-        auto coordinates_to = possible_movies[number_movie];
+    for (auto it = possible_moves.begin(); it != possible_moves.end(); ++it) {
+        auto coordinates_to = *it;
         auto tmp_piece = copy_board->GetPiece(coordinates_to.x, coordinates_to.y);
         copy_board->ContentTmpChange(coordinates_to, true, piece);
         copy_board->ContentTmpChange(piece_start_coordinates, false);
-        if(!CellIsAttack(copy_board, our_king_coordinates, enemy_color)){
-            if(!(coordinates_to.x == enemy_king->GetCoordinates().x &&
-                coordinates_to.y == enemy_king->GetCoordinates().y)){
-            filtr_movies.push_back(coordinates_to);
-            }
+
+        if (!CellIsAttack(copy_board, our_king_coordinates, enemy_color) &&
+            !(coordinates_to.x == enemy_king->GetCoordinates().x &&
+              coordinates_to.y == enemy_king->GetCoordinates().y)) {
+            filtr_moves.push_back(coordinates_to);
         }
         copy_board->ContentTmpChange(coordinates_to, true, tmp_piece);
         copy_board->ContentTmpChange(piece_start_coordinates, true, piece);
-        number_movie++;
     }
 }
 
@@ -341,8 +335,8 @@ bool Board::CellIsAttack(Board* board, Coordinates piece_coordinates, Color enem
             if(board->GetPiece(x,y) != nullptr && board->GetPiece(x,y)->GetName()!= "King"
                 &&board->GetPiece(x,y)->GetColor() == enemy_color){
                 auto enemy_piece = board->GetPiece(x,y);
-                auto enemy_movies = enemy_piece->validator(board, false);
-                for(auto& move : enemy_movies){
+                auto enemy_moves = enemy_piece->validator(board, false);
+                for(auto& move : enemy_moves){
                     if(piece_coordinates.x == move.x &&
                         piece_coordinates.y == move.y){
                         return true;
