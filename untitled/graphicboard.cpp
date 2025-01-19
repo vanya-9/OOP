@@ -6,8 +6,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
-GraphicBoard::GraphicBoard(QWidget *parent)
-    : QGraphicsView(parent), scene_(new QGraphicsScene(this)), board_(nullptr)
+GraphicBoard::GraphicBoard(QWidget *parent) : QGraphicsView(parent), scene_(new QGraphicsScene(this)), board_(nullptr)
 {
 
     setupScene();
@@ -69,7 +68,6 @@ void GraphicBoard::drawPieces(bool update) {
         for (int col = 0; col < 8; ++col) {
             std::shared_ptr<Piece> piece = board_->GetPiece(col, row);
 
-            //проверка на повторную отрисовку фигур
             auto cell = std::make_pair(row, col);
             if (piece != nullptr) {
                 if(update == true){
@@ -82,7 +80,6 @@ void GraphicBoard::drawPieces(bool update) {
                 }
 
             } else {
-                // Если ячейка пуста и содержит изображение, удаляем его
                 if (piece_items_.find(cell) != piece_items_.end()) {
                     scene_->removeItem(piece_items_[cell]);
                     delete piece_items_[cell];
@@ -108,8 +105,7 @@ void GraphicBoard::highlightPossibleMoves(const std::vector<Coordinates>& moves)
     for (const auto& move : moves) {
             QGraphicsRectItem* highlight = scene_->addRect(
                 move.x * cell_size, move.y * cell_size, cell_size, cell_size,
-                QPen(Qt::green), QBrush(QColor(0, 255, 0, 100))
-                );
+                QPen(Qt::green), QBrush(QColor(0, 255, 0, 100)));
             highlight->setZValue(2);
             highlighted_cells_.push_back(highlight);
 

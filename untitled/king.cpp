@@ -95,7 +95,6 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
     return possible_moves;
 }
 
-// !king->IsAttack(this, current_coords, move, board)
 bool King::IsAttack(std::shared_ptr<Piece> piece, Coordinates piece_coordinates, Coordinates coordinates_to, Board* board){
     Color enemy_color = piece->GetColor() == WHITE ? BLACK : WHITE;
     std::shared_ptr<Piece> enemy_king;

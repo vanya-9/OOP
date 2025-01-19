@@ -1,11 +1,8 @@
 #include "boardcontroller.h"
 #include "logic.h"
-BoardController::BoardController(Board* board,
-                                 GraphicBoard* graphic_board,
-                                 QObject* parent)
+BoardController::BoardController(Board* board, GraphicBoard* graphic_board, QObject* parent)
     : QObject(parent), board_(board), graphic_board_(graphic_board) {
-    connect(graphic_board_, &GraphicBoard::cellClicked, this,
-            &BoardController::handleCellClick);
+    connect(graphic_board_, &GraphicBoard::cellClicked, this, &BoardController::handleCellClick);
 }
 
 void BoardController::handleCellClick(int x, int y) {
@@ -42,8 +39,7 @@ void BoardController::highlightMoves(std::shared_ptr<Piece> piece) {
     graphic_board_->highlightPossibleMoves(possible_moves);
 }
 
-void BoardController::movePieceTo(std::shared_ptr<Piece> piece,
-                                  const Coordinates& target_coords) {
+void BoardController::movePieceTo(std::shared_ptr<Piece> piece, const Coordinates& target_coords) {
     board_->SetPiece(piece, target_coords);
     graphic_board_->clearHighlights();
     graphic_board_->drawPieces(true);

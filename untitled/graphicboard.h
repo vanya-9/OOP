@@ -30,7 +30,7 @@ signals:
 private:
     QGraphicsScene *scene_;
     Board* board_;
-    std::shared_ptr<Piece> selected_piece_ = nullptr;     // Указатель на выбранную фигуру (для подсветки)
+    std::shared_ptr<Piece> selected_piece_ = nullptr;
     std::vector<QGraphicsRectItem*> highlighted_cells_;
     std::map<std::pair<int, int>, QGraphicsPixmapItem*> piece_items_;
     void transformPawn(std::shared_ptr<Piece> pawn, const int new_type);

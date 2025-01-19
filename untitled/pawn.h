@@ -17,9 +17,6 @@ public:
 
     bool GetUpdate();
 
-
-
-
 };
 
 #endif // PAWN_H
