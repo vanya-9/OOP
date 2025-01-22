@@ -78,19 +78,19 @@ void Board::SetBishop() {
 }
 
 void Board::SetKing() {
-  Coordinates coords_w_king = {0, 4};
-  content_[0][4] = factory_.CreateObject(KING, WHITE, coords_w_king);
+  Coordinates coords_w_king = {0, 3};
+  content_[0][3] = factory_.CreateObject(KING, WHITE, coords_w_king);
 
-  Coordinates coords_b_king = {7, 4};
-  content_[7][4] = factory_.CreateObject(KING, BLACK, coords_b_king);
+  Coordinates coords_b_king = {7, 3};
+  content_[7][3] = factory_.CreateObject(KING, BLACK, coords_b_king);
 }
 
 void Board::SetQueen() {
-  Coordinates coords_w_queen = {0, 3};
-  content_[0][3] = factory_.CreateObject(QUEEN, WHITE, coords_w_queen);
+  Coordinates coords_w_queen = {0, 4};
+  content_[0][4] = factory_.CreateObject(QUEEN, WHITE, coords_w_queen);
 
-  Coordinates coords_b_queen = {7, 3};
-  content_[7][3] = factory_.CreateObject(QUEEN, BLACK, coords_b_queen);
+  Coordinates coords_b_queen = {7, 4};
+  content_[7][4] = factory_.CreateObject(QUEEN, BLACK, coords_b_queen);
 }
 
 void Board::SetDefault() {
@@ -177,6 +177,13 @@ void Board::SetPiece(std::shared_ptr<Piece> piece, Coordinates new_coordinates) 
       new_coordinates.x < 0 || new_coordinates.x >= board_size) {
     return;
   }
+
+  auto result = CheckResult();
+  if(result != GameResult::Continue){
+      emit GameEnded(result);
+  }
+
+
   if (IsShortCastling(new_coordinates)) {
     MakeShortCastling(piece, new_coordinates);
     return;
@@ -321,4 +328,39 @@ bool Board::CellIsAttack(Board* board, Coordinates piece_coordinates, Color enem
     }
   }
   return false;
+}
+
+Board::GameResult Board::CheckResult(){
+
+    Color current_player_color = (turn_to_walk % 2 == 0) ? WHITE : BLACK;
+    Color enemy_color = (current_player_color == WHITE) ? BLACK : WHITE;
+
+    std::shared_ptr<King> current_king = GetNeededKing(this, current_player_color);
+    if(!CanPlayerGo(current_player_color) &&
+        CellIsAttack(this, current_king->GetCoordinates(), enemy_color)){
+        return GameResult::Checkmate;
+    }
+
+    if(!CanPlayerGo(current_player_color) && !CanPlayerGo(enemy_color)){
+        return GameResult::Draw;
+    }
+
+    return GameResult::Continue;
+}
+
+bool Board::CanPlayerGo(Color color){
+
+    for(int x = 0; x < board_size; x++){
+        for(int y = 0; y < board_size; y++){
+
+            std::shared_ptr<Piece> piece = GetPiece(x, y);
+            if(piece != nullptr && piece->GetColor() == color){
+                if(!piece->validator(this).empty()){
+                    return true;
+                }
+            }
+
+        }
+    }
+    return false;
 }

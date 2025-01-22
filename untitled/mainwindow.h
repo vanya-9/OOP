@@ -22,6 +22,7 @@ private:
     Ui::MainWindow *ui;
     GraphicBoard* graphic_board;
     BoardController* controller;
+    Board* board;
 
 };
 #endif // MAINWINDOW_H

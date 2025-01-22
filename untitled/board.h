@@ -11,6 +11,14 @@ class Board : public QObject {
   Factory<Piece, int, std::function<std::shared_ptr<Piece>(Color, Coordinates)>> factory_;
 
  public:
+  enum class GameResult {
+    Continue,
+    Checkmate,
+    Draw
+  };
+
+  GameResult CheckResult();
+
   Board();
 
   void OnPawnTransform(std::shared_ptr<Piece> pawn, Coordinates new_coordinates);
@@ -27,6 +35,7 @@ class Board : public QObject {
                   std::vector<Coordinates>& filtr_moves,
                   std::shared_ptr<Piece> piece,
                   Color enemy_color);
+
   void SetPawns();
   void SetRook();
   void SetKnight();
@@ -42,9 +51,14 @@ class Board : public QObject {
 
   std::shared_ptr<King> GetNeededKing(Board* board, Color color);
 
+  bool CanPlayerGo(Color color);
+
+
+
  signals:
   void ChooseFigure(std::shared_ptr<Piece> Pawn);
   void UpdateFigure();
+  void GameEnded(GameResult result);
 
  public slots:
   void onTransformationChosen(int chosen_figure, std::shared_ptr<Piece> pawn);

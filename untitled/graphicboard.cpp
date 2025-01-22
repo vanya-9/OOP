@@ -5,6 +5,7 @@
 #include <qmessagebox.h>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QApplication>
 
 GraphicBoard::GraphicBoard(QWidget *parent) : QGraphicsView(parent), scene_(new QGraphicsScene(this)), board_(nullptr)
 {
@@ -97,6 +98,7 @@ void GraphicBoard::SetBoard(Board* board)
 
     connect(board_, &Board::ChooseFigure, this, &GraphicBoard::ChooseTransform);
     connect(board_, &Board::UpdateFigure, this, &GraphicBoard::UpdateFigure);
+    connect(board_, &Board::GameEnded, this, &GraphicBoard::OnGameEnded);
 
 }
 
@@ -119,10 +121,6 @@ void GraphicBoard::clearHighlights()
     }
     highlighted_cells_.clear();
 }
-
-
-
-
 
 void GraphicBoard::mousePressEvent(QMouseEvent* event) {
     QPointF scene_position = mapToScene(event->pos());
@@ -186,4 +184,31 @@ GraphicBoard::~GraphicBoard() {
     }
     piece_items_.clear();
     clearHighlights();
+    delete scene_;
+}
+
+void GraphicBoard::OnGameEnded(Board::GameResult result) {
+    QString message;
+    switch (result) {
+    case Board::GameResult::Checkmate:
+        message = "Мат! Игра завершена.";
+        break;
+    case Board::GameResult::Draw:
+        message = "Ничья!";
+        break;
+    default:
+        return;
+    }
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Игра окончена");
+    msgBox.setText(message);
+
+    QPushButton* exitButton = msgBox.addButton("Выход", QMessageBox::ActionRole);
+
+    msgBox.exec();
+
+    if (msgBox.clickedButton() == exitButton) {
+        QApplication::quit();
+    }
 }

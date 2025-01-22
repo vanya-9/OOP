@@ -4,7 +4,7 @@
 #include "graphicboard.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
-  Board* board = new Board();
+  board = new Board();
 
   graphic_board = new GraphicBoard();
   ui->setupUi(this);
@@ -21,4 +21,5 @@ MainWindow::~MainWindow() {
   delete ui;
   delete controller;
   delete graphic_board;
+  delete board;
 }

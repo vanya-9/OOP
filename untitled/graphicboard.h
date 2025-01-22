@@ -42,6 +42,7 @@ protected:
 public slots:
     void ChooseTransform(std::shared_ptr<Piece> pawn);
     void UpdateFigure();
+    void OnGameEnded(Board::GameResult result);
 
 };
 
