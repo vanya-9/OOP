@@ -8,17 +8,14 @@ extern bool castling;
 
 enum Color { WHITE, BLACK };
 
-
-
 typedef struct {
-    int y;
-    int x;
+  int y;
+  int x;
 } Coordinates;
 
-class logic
-{
-public:
-    logic();
+class logic {
+ public:
+  logic();
 };
 
-#endif // LOGIC_H
+#endif  // LOGIC_H

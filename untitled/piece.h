@@ -17,6 +17,8 @@ public:
         coordinates_(coordinates), piece_name_(piece_name)
         {};
 
+    std::vector<Coordinates> ValidateLineMoves(Board* board,std::vector<std::pair<int, int>>& directions);
+
     virtual ~Piece() {};
 
     Color GetColor();

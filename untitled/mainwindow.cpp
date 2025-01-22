@@ -3,23 +3,22 @@
 #include "boardcontroller.h"
 #include "graphicboard.h"
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   Board* board = new Board();
 
-
-  GraphicBoard* graphic_board = new GraphicBoard();
+  graphic_board = new GraphicBoard();
   ui->setupUi(this);
-  connect(graphic_board, &GraphicBoard::transformationChosen, board,
-          &Board::onTransformationChosen);
+  connect(graphic_board, &GraphicBoard::transformationChosen, board, &Board::onTransformationChosen);
 
-  graphic_board->SetBoard(*board);
+  graphic_board->SetBoard(board);
 
-  BoardController* controller = new BoardController(board, graphic_board, this);
+  controller = new BoardController(board, graphic_board, this);
 
   setCentralWidget(graphic_board);
 }
 
 MainWindow::~MainWindow() {
   delete ui;
+  delete controller;
+  delete graphic_board;
 }

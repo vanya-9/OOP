@@ -132,12 +132,11 @@ bool Board::IsLongCastling(Coordinates new_coordinates) {
 }
 
 void Board::MakeShortCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates) {
-  std::shared_ptr<Piece> rook;
   Coordinates king_new_coords;
   Coordinates rook_new_coords;
 
   king_new_coords = {new_coordinates.y, new_coordinates.x};
-  rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
+  auto rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
   rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
 
   content_[king_new_coords.y][king_new_coords.x] = piece;
@@ -219,10 +218,12 @@ void Board ::OnPawnTransform(std::shared_ptr<Piece> piece, Coordinates new_coord
 void Board::onTransformationChosen(int chosen_figure, std::shared_ptr<Piece> pawn) {
   Coordinates current_coords = pawn->GetCoordinates();
   std::shared_ptr<Piece> new_piece = nullptr;
-  switch (chosen_figure) {
-    if (this->GetPiece(current_coords.y, current_coords.x) != nullptr) {
+
+  if (this->GetPiece(current_coords.y, current_coords.x) != nullptr) {
       content_[current_coords.y][current_coords.x] = nullptr;
-    }
+  }
+
+  switch (chosen_figure) {
     case QUEEN:
       new_piece = std::make_shared<Queen>(pawn->GetColor(), current_coords);
       content_[current_coords.y][current_coords.x] = new_piece;
@@ -256,47 +257,33 @@ void Board::ContentTmpChange(Coordinates coordinates, bool state, std::shared_pt
   }
 }
 
-std::shared_ptr<King> Board::GetEnemyKing(std::shared_ptr<Piece> piece, Board* board) {
-  std::shared_ptr<King> enemy_king;
-  Color friend_color = piece->GetColor() == WHITE ? WHITE : BLACK;
+std::shared_ptr<King> Board::GetNeededKing(Board* board, Color color) {
+    std::shared_ptr<King> king;
 
-  for (int x = 0; x < board_size; x++) {
-    for (int y = 0; y < board_size; y++) {
-      if (board->GetPiece(x, y) != nullptr &&
-          board->GetPiece(x, y)->GetName() == "King" &&
-          board->GetPiece(x, y)->GetColor() != friend_color) {
-        enemy_king = std::dynamic_pointer_cast<King>(board->GetPiece(x, y));
-      }
+    for (int x = 0; x < board_size; x++) {
+        for (int y = 0; y < board_size; y++) {
+            if (board->GetPiece(x, y) != nullptr &&
+                board->GetPiece(x, y)->GetName() == "King" &&
+                board->GetPiece(x, y)->GetColor() == color) {
+                king = std::dynamic_pointer_cast<King>(board->GetPiece(x, y));
+                qDebug() << "nashe;";
+            }
+        }
     }
-  }
 
-  return enemy_king;
+    return king;
 }
 
-std::shared_ptr<King> Board::GetFriendKing(std::shared_ptr<Piece> piece, Board* board) {
-  std::shared_ptr<King> friend_king;
-  Color enemy_color = piece->GetColor() == WHITE ? BLACK : WHITE;
-
-  for (int x = 0; x < board_size; x++) {
-    for (int y = 0; y < board_size; y++) {
-      if (board->GetPiece(x, y) != nullptr &&
-          board->GetPiece(x, y)->GetName() == "King" &&
-          board->GetPiece(x, y)->GetColor() != enemy_color) {
-        friend_king = std::dynamic_pointer_cast<King>(board->GetPiece(x, y));
-      }
-    }
-  }
-
-  return friend_king;
-}
 
 void Board::FiltrMoves(std::vector<Coordinates> possible_moves,
                        std::vector<Coordinates>& filtr_moves,
                        std::shared_ptr<Piece> piece,
                        Color enemy_color) {
   auto copy_board = this;
-  std::shared_ptr<King> our_king = GetFriendKing(piece, copy_board);
-  std::shared_ptr<King> enemy_king = GetEnemyKing(piece, copy_board);
+
+  Color friend_color = piece->GetColor() == WHITE ? WHITE : BLACK;
+  std::shared_ptr<King> our_king = GetNeededKing(copy_board, friend_color);
+  std::shared_ptr<King> enemy_king = GetNeededKing(copy_board, enemy_color);
 
   auto piece_start_coordinates = piece->GetCoordinates();
   auto our_king_coordinates = our_king->GetCoordinates();

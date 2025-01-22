@@ -40,8 +40,7 @@ class Board : public QObject {
   void MakeShortCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates);
   void MakeLongCastling(std::shared_ptr<Piece> piece, Coordinates new_coordinates);
 
-  std::shared_ptr<King> GetEnemyKing(std::shared_ptr<Piece> piece, Board* board);
-  std::shared_ptr<King> GetFriendKing(std::shared_ptr<Piece> piece, Board* board);
+  std::shared_ptr<King> GetNeededKing(Board* board, Color color);
 
  signals:
   void ChooseFigure(std::shared_ptr<Piece> Pawn);

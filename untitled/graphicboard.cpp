@@ -90,9 +90,9 @@ void GraphicBoard::drawPieces(bool update) {
     }
 }
 
-void GraphicBoard::SetBoard(Board& board)
+void GraphicBoard::SetBoard(Board* board)
 {
-    board_ = &board;
+    board_ = board;
     drawBoard();
 
     connect(board_, &Board::ChooseFigure, this, &GraphicBoard::ChooseTransform);
@@ -178,4 +178,12 @@ void GraphicBoard::ChooseTransform(std::shared_ptr<Piece> pawn){
 
 void GraphicBoard::UpdateFigure(){
     drawPieces(true);
+}
+
+GraphicBoard::~GraphicBoard() {
+    for (auto& item : piece_items_) {
+        scene_->removeItem(item.second);
+    }
+    piece_items_.clear();
+    clearHighlights();
 }

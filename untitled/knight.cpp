@@ -8,17 +8,6 @@ std::vector<Coordinates> Knight::validator(Board* board, bool filtr) {
     Color enemy_color = (GetColor() == WHITE) ? BLACK : WHITE;
     Coordinates current_pos = GetCoordinates();
 
-    std::vector<std::pair<int, int>> knight_moves = {
-        {+2, +1},
-        {+2, -1},
-        {-2, +1},
-        {-2, -1},
-        {+1, +2},
-        {+1, -2},
-        {-1, +2},
-        {-1, -2}
-    };
-
     for (const auto& move : knight_moves) {
         int new_x = current_pos.x + move.second;
         int new_y = current_pos.y + move.first;

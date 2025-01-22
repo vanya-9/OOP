@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "graphicboard.h"
-
+#include "boardcontroller.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -20,6 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    GraphicBoard* graphic_board;
+    BoardController* controller;
 
 };
 #endif // MAINWINDOW_H

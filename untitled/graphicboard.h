@@ -10,7 +10,8 @@ class GraphicBoard : public QGraphicsView
     Q_OBJECT
 public:
     explicit GraphicBoard(QWidget *parent = nullptr);
-    void SetBoard(Board& board);
+    ~GraphicBoard();
+    void SetBoard(Board* board);
     void setupScene();
     void drawBoard();
     void drawPieces(bool update = false);
