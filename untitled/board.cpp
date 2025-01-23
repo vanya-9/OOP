@@ -343,7 +343,8 @@ Board::GameResult Board::CheckResult(){
         return GameResult::Checkmate;
     }
 
-    if(!CanPlayerGo(current_player_color) && !CanPlayerGo(enemy_color)){
+    if(!CanPlayerGo(current_player_color) &&
+        !CellIsAttack(this, current_king->GetCoordinates(), enemy_color)){
         return GameResult::Draw;
     }
 
