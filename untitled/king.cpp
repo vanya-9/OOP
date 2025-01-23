@@ -8,7 +8,7 @@ King::King(Color color, Coordinates coordinates)
 }
 
 void King::CastlingSwap(Board *board, std::vector<Coordinates>& possible_moves){
-    Coordinates short_castling_coordinates = {0, 6};
+    Coordinates short_castling_coordinates = {0, 1};
     short_castling_coordinates.y = GetColor() == WHITE ? 0 : 7;
     Color friendly_color = GetColor() == WHITE ? WHITE : BLACK;
     if(this->first_move == true && !IsAttack(shared_from_this(), this->GetCoordinates(), this->GetCoordinates(), board) &&
@@ -16,31 +16,32 @@ void King::CastlingSwap(Board *board, std::vector<Coordinates>& possible_moves){
         (short_castling_coordinates.y == 7  || short_castling_coordinates.y == 0) &&
         short_castling_coordinates.x - 1 >= 0 &&  GetColor() == friendly_color &&
         board->GetPiece(short_castling_coordinates.x, short_castling_coordinates.y) == nullptr &&
-        board->GetPiece(short_castling_coordinates.x - 1, short_castling_coordinates.y) == nullptr &&
-        board->GetPiece(short_castling_coordinates.x + 1, short_castling_coordinates.y) != nullptr &&
-        board->GetPiece(short_castling_coordinates.x + 1, short_castling_coordinates.y)->GetName() == "Rook" &&
-        board->GetPiece(short_castling_coordinates.x + 1, short_castling_coordinates.y)->GetColor() == friendly_color){
-        castling = true;
-
+        board->GetPiece(short_castling_coordinates.x + 1, short_castling_coordinates.y) == nullptr &&
+        board->GetPiece(short_castling_coordinates.x - 1, short_castling_coordinates.y) != nullptr &&
+        board->GetPiece(short_castling_coordinates.x - 1, short_castling_coordinates.y)->GetName() == "Rook" &&
+        board->GetPiece(short_castling_coordinates.x - 1, short_castling_coordinates.y)->GetColor() == friendly_color){
+        castling_black = (GetColor() == WHITE) ? false : true;
+        castling_white = (GetColor() == WHITE) ? true : false;
 
 
         Coordinates king_new_coords = { short_castling_coordinates.y, short_castling_coordinates.x};
         possible_moves.push_back(king_new_coords);
     }
-    Coordinates long_castling_coordinates = {7, 2};
+    Coordinates long_castling_coordinates = {7, 5};
     long_castling_coordinates.y = GetColor() == WHITE ? 0 : 7;
     if(this->first_move == true && !IsAttack(shared_from_this(), this->GetCoordinates(), this->GetCoordinates(), board) &&//двигаю короля на его координаты, смотря что он не под атакой
         !IsAttack(shared_from_this(), this->GetCoordinates(), long_castling_coordinates, board) &&
         (long_castling_coordinates.y == 7  || long_castling_coordinates.y == 0) &&
-        long_castling_coordinates.x - 2 >= 0 && long_castling_coordinates.x + 3 <= 7 &&long_castling_coordinates.y <= 7 &&
+        long_castling_coordinates.x + 2 <= 7  && long_castling_coordinates.y <= 7 &&
         GetColor() == friendly_color &&
         board->GetPiece(long_castling_coordinates.x, long_castling_coordinates.y) == nullptr &&
         board->GetPiece(long_castling_coordinates.x + 1, long_castling_coordinates.y) == nullptr &&
         board->GetPiece(long_castling_coordinates.x - 1, long_castling_coordinates.y) == nullptr &&
-        board->GetPiece(long_castling_coordinates.x - 2, long_castling_coordinates.y) != nullptr &&
-        board->GetPiece(long_castling_coordinates.x - 2, long_castling_coordinates.y)->GetName() == "Rook" &&
-        board->GetPiece(long_castling_coordinates.x - 2, long_castling_coordinates.y)->GetColor() == friendly_color){
-        castling = true;
+        board->GetPiece(long_castling_coordinates.x + 2, long_castling_coordinates.y) != nullptr &&
+        board->GetPiece(long_castling_coordinates.x + 2, long_castling_coordinates.y)->GetName() == "Rook" &&
+        board->GetPiece(long_castling_coordinates.x + 2, long_castling_coordinates.y)->GetColor() == friendly_color){
+        castling_black = (GetColor() == WHITE) ? false : true;
+        castling_white = (GetColor() == WHITE) ? true : false;
         Coordinates king_new_coords = { long_castling_coordinates.y, long_castling_coordinates.x};
         possible_moves.push_back(king_new_coords);
     }
@@ -67,7 +68,8 @@ std::vector<Coordinates> King::validator(Board* board, bool filtr) {
             }
         }
     }
-    castling = false; //при других вызовах валидатора тут может обновиться значение рокировки,
+    castling_black = false;
+    castling_white = false; //при других вызовах валидатора тут может обновиться значение рокировки,
     //однако если мы не срокируемся, оно всегда будет трушным, что может привести к  mistakes
     //например в валидатор не добавим возможность, а она будет(в случае ошибок),
     //поэтому надо обновлять на false

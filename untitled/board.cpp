@@ -114,18 +114,18 @@ std::shared_ptr<Piece> Board::GetPiece(int x, int y) {
 }
 
 bool Board::IsShortCastling(Coordinates new_coordinates) {
-  if (castling == true &&
-      ((new_coordinates.y == 7 && new_coordinates.x == 6) ||
-       (new_coordinates.y == 0 && new_coordinates.x == 6))) {
+  if
+      ((new_coordinates.y == 7 && new_coordinates.x == 1 && castling_black) ||
+       (new_coordinates.y == 0 && new_coordinates.x == 1 && castling_white)) {
     return true;
   }
   return false;
 }
 
 bool Board::IsLongCastling(Coordinates new_coordinates) {
-  if (castling == true &&
-      ((new_coordinates.y == 7 && new_coordinates.x == 2) ||
-       (new_coordinates.y == 0 && new_coordinates.x == 2))) {
+  if (
+      ((new_coordinates.y == 7 && new_coordinates.x == 5 && castling_black) ||
+       (new_coordinates.y == 0 && new_coordinates.x == 5 && castling_white))) {
     return true;
   }
   return false;
@@ -136,18 +136,19 @@ void Board::MakeShortCastling(std::shared_ptr<Piece> piece, Coordinates new_coor
   Coordinates rook_new_coords;
 
   king_new_coords = {new_coordinates.y, new_coordinates.x};
-  auto rook = GetPiece(new_coordinates.x + 1, new_coordinates.y);
-  rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
+  auto rook = GetPiece(new_coordinates.x - 1, new_coordinates.y);
+  rook_new_coords = {new_coordinates.y, new_coordinates.x + 1};
 
   content_[king_new_coords.y][king_new_coords.x] = piece;
   content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
   piece->SetCoordinates(king_new_coords);
   content_[rook_new_coords.y][rook_new_coords.x] = rook;
-  content_[new_coordinates.y][new_coordinates.x + 1] = nullptr;
+  content_[new_coordinates.y][new_coordinates.x - 1] = nullptr;
   rook->SetCoordinates(rook_new_coords);
 
+  castling_black = (piece->GetColor() == BLACK) ? false : true;
+  castling_white = (piece->GetColor() == BLACK) ? true : false;
   turn_to_walk++;
-  castling = false;
   piece->first_move = false;
 }
 
@@ -157,18 +158,19 @@ void Board::MakeLongCastling(std::shared_ptr<Piece> piece, Coordinates new_coord
   Coordinates rook_new_coords;
 
   king_new_coords = {new_coordinates.y, new_coordinates.x};
-  rook = GetPiece(new_coordinates.x - 2, new_coordinates.y);
-  rook_new_coords = {new_coordinates.y, new_coordinates.x + 1};
+  rook = GetPiece(new_coordinates.x + 2, new_coordinates.y);
+  rook_new_coords = {new_coordinates.y, new_coordinates.x - 1};
 
   content_[king_new_coords.y][king_new_coords.x] = piece;
   content_[piece->GetCoordinates().y][piece->GetCoordinates().x] = nullptr;
   piece->SetCoordinates(king_new_coords);
   content_[rook_new_coords.y][rook_new_coords.x] = rook;
-  content_[new_coordinates.y][new_coordinates.x - 2] = nullptr;
+  content_[new_coordinates.y][new_coordinates.x + 2] = nullptr;
   rook->SetCoordinates(rook_new_coords);
 
+  castling_black = (piece->GetColor() == BLACK) ? false : true;
+  castling_white = (piece->GetColor() == BLACK) ? true : false;
   turn_to_walk++;
-  castling = false;
   piece->first_move = false;
 }
 
@@ -273,7 +275,7 @@ std::shared_ptr<King> Board::GetNeededKing(Board* board, Color color) {
                 board->GetPiece(x, y)->GetName() == "King" &&
                 board->GetPiece(x, y)->GetColor() == color) {
                 king = std::dynamic_pointer_cast<King>(board->GetPiece(x, y));
-                qDebug() << "nashe;";
+                //qDebug() << "nashe;";
             }
         }
     }
