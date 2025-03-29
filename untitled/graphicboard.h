@@ -1,0 +1,49 @@
+// graphicboard.h
+#ifndef GRAPHICBOARD_H
+#define GRAPHICBOARD_H
+
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include "board.h"
+class GraphicBoard : public QGraphicsView
+{
+    Q_OBJECT
+public:
+    explicit GraphicBoard(QWidget *parent = nullptr);
+    ~GraphicBoard();
+    void SetBoard(Board* board);
+    void setupScene();
+    void drawBoard();
+    void drawPieces(bool update = false);
+    void highlightPossibleMoves(const std::vector<Coordinates>& moves);
+    void drawTypePiece(std::map<std::pair<int, int>, QGraphicsPixmapItem*> &piece_items, std::shared_ptr<Piece> piece, int row, int col);
+
+    void clearHighlights();
+
+    QString GetPathPiece(std::shared_ptr<Piece> piece);
+
+signals:
+    void cellClicked(int x, int y);
+    void transformationChosen(int chosen_figure, std::shared_ptr<Piece>pawn);
+
+
+
+private:
+    QGraphicsScene *scene_;
+    Board* board_;
+    std::shared_ptr<Piece> selected_piece_ = nullptr;
+    std::vector<QGraphicsRectItem*> highlighted_cells_;
+    std::map<std::pair<int, int>, QGraphicsPixmapItem*> piece_items_;
+    void transformPawn(std::shared_ptr<Piece> pawn, const int new_type);
+
+protected:
+    void mousePressEvent(QMouseEvent *event);
+
+public slots:
+    void ChooseTransform(std::shared_ptr<Piece> pawn);
+    void UpdateFigure();
+    void OnGameEnded(Board::GameResult result);
+
+};
+
+#endif // GRAPHICBOARD_H
